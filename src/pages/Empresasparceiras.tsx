@@ -4,6 +4,9 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import supabase from "@/utility/supabaseClient";
 
+// Imagem do HERO
+import heroImg from "@/assets/empresas.jpg";
+
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -44,6 +47,21 @@ export default function EmpresasParceiras() {
     <>
       <Header />
 
+      {/* HERO */}
+      <section className="relative h-[65vh] md:h-[100vh] w-full overflow-hidden flex items-center justify-center">
+        <img
+          src={heroImg}
+          alt="Empreendimentos"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/60" />
+
+        <h1 className="relative z-10 text-white text-4xl md:text-6xl font-bold text-center drop-shadow-lg">
+          Nossos Empreendimentos Parceiros
+        </h1>
+      </section>
+
+      {/* CONTEÚDO */}
       <main className="max-w-6xl mx-auto px-4 py-16 space-y-16">
         {CARROSSEIS.map((car, idx) => {
           const items = empresas.filter((e) => e.carrossel === car.id);
@@ -55,25 +73,20 @@ export default function EmpresasParceiras() {
                 {car.titulo}
               </h2>
 
+              {/* CARROSSEL RESPONSIVO — MOBILE vira slider */}
               <Swiper
                 slidesPerView={1.1}
                 spaceBetween={20}
                 breakpoints={{
-                  640: { slidesPerView: 2.2 },
-                  1024: { slidesPerView: 3.1 },
+                  640: { slidesPerView: 2 },
+                  1024: { slidesPerView: 3 },
                 }}
                 className="pb-10"
               >
                 {items.map((empresa) => (
                   <SwiperSlide key={empresa.id}>
                     <div
-                      className="
-                        rounded-2xl overflow-hidden relative cursor-pointer
-                        bg-black text-white shadow-xl
-                        transition-all duration-300
-                        hover:scale-[1.03]
-                        hover:shadow-[0px_0px_25px_rgba(255,223,0,0.7)]
-                      "
+                      className="rounded-2xl overflow-hidden relative cursor-pointer bg-black text-white shadow-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-[0px_0px_25px_rgba(0,255,100,0.5)]"
                     >
                       {/* Imagem */}
                       <img
@@ -88,26 +101,12 @@ export default function EmpresasParceiras() {
                       {/* Conteúdo */}
                       <div className="absolute bottom-0 p-5 space-y-2">
                         <p className="text-green-400 text-sm">Parceiro oficial</p>
-
                         <h3 className="text-xl font-semibold">{empresa.nome}</h3>
+                        <p className="text-sm text-white/80 line-clamp-3">{empresa.describ}</p>
 
-                        <p className="text-sm text-white/80 line-clamp-3">
-                          {empresa.describ}
-                        </p>
-
-                        {/* Botão PDF */}
                         {empresa.pdf && (
-                          <a
-                            href={empresa.pdf}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button
-                              className="
-                                mt-3 bg-green-600 hover:bg-green-700
-                                rounded-full px-4 py-2 text-sm
-                              "
-                            >
+                          <a href={empresa.pdf} target="_blank" rel="noopener noreferrer">
+                            <Button className="mt-3 bg-green-600 hover:bg-green-700 rounded-full px-4 py-2 text-sm">
                               Baixar PDF
                             </Button>
                           </a>

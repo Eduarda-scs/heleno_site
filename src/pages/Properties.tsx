@@ -3,8 +3,12 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
-import heroBalneario from "@/assets/hero-balneario.jpg";
+import heroEmpreendimentos from "@/assets/empreendimentos.jpg"; // ALTERADO
 import supabase from "@/utility/supabaseClient";
+
+// Swiper
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 const filters = ["Todos", "Na Planta", "Prontos", "Luxo", "Frente Mar"];
 
@@ -28,7 +32,7 @@ const Properties = () => {
       return;
     }
 
-    // Converter coluna fotos que está como texto
+    // Converter coluna 'images'
     const parsed = data.map((item) => {
       let firstImage = "";
 
@@ -45,7 +49,7 @@ const Properties = () => {
         location: item.bairro,
         type: item.tipo,
         image: firstImage,
-        categories: [item.tipo], // usado nos filtros
+        categories: [item.tipo],
       };
     });
 
@@ -64,15 +68,25 @@ const Properties = () => {
           property.categories.includes(activeFilter)
         );
 
+  // Função para dividir em blocos de 30
+  const chunk = (arr, size) => {
+    return arr.reduce((acc, _, i) => {
+      if (i % size === 0) acc.push(arr.slice(i, i + size));
+      return acc;
+    }, []);
+  };
+
+  const carrosseis = chunk(filteredProperties, 30);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section */}
+      {/* HERO */}
       <section className="relative h-[65vh] flex items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroBalneario})` }}
+          style={{ backgroundImage: `url(${heroEmpreendimentos})` }}
         />
         <div className="absolute inset-0 bg-primary/70" />
 
@@ -86,7 +100,7 @@ const Properties = () => {
         </div>
       </section>
 
-      {/* Filtros */}
+      {/* FILTROS */}
       <section className="py-8 bg-luxury-bg border-b border-border">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-wrap gap-3 justify-center">
@@ -104,7 +118,7 @@ const Properties = () => {
         </div>
       </section>
 
-      {/* Lista de Propriedades */}
+      {/* LISTA EM CARROSSEIS */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           {loading ? (
@@ -123,17 +137,30 @@ const Properties = () => {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredProperties.map((property, index) => (
-                  <div
-                    key={property.id}
-                    className="animate-fade-up"
-                    style={{ animationDelay: `${index * 50}ms` }}
+              {carrosseis.map((bloco, i) => (
+                <div key={i} className="mb-12">
+                  <h2 className="text-2xl font-bold mb-4 text-secondary">
+                    Carrossel {i + 1}
+                  </h2>
+
+                  <Swiper
+                    slidesPerView={1.1}
+                    spaceBetween={20}
+                    breakpoints={{
+                      640: { slidesPerView: 2.2 },
+                      1024: { slidesPerView: 3.2 },
+                      1400: { slidesPerView: 4.1 },
+                    }}
+                    className="pb-10"
                   >
-                    <PropertyCard {...property} />
-                  </div>
-                ))}
-              </div>
+                    {bloco.map((property) => (
+                      <SwiperSlide key={property.id}>
+                        <PropertyCard {...property} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              ))}
 
               {filteredProperties.length === 0 && (
                 <div className="text-center py-16">
