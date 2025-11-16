@@ -48,7 +48,7 @@ export default function EmpresasParceiras() {
       <Header />
 
       {/* HERO */}
-      <section className="relative h-[65vh] md:h-[100vh] w-full overflow-hidden flex items-center justify-center">
+      <section className="relative h-[45vh] md:h-[100vh] w-full overflow-hidden flex items-center justify-center">
         <img
           src={heroImg}
           alt="Empreendimentos"
