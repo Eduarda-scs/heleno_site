@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight,
   Award,
-  Heart,
-  ShieldCheck,
-  Target,
+  Building,
+  Briefcase,
+  MapPin,
   Users,
 } from "lucide-react";
 import propertyLuxury from "@/assets/property-luxury.jpg";
@@ -15,42 +15,28 @@ import cityAerial from "@/assets/city-aerial.jpg";
 
 const values = [
   {
-    icon: Heart,
-    title: "Paixão",
-    description: "Amamos o que fazemos e isso se reflete em cada atendimento",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Confiança",
-    description: "Transparência e honestidade em todas as nossas relações",
+    icon: Briefcase,
+    title: "Experiência",
+    description:
+      "Quase 30 anos atuando no mercado imobiliário com profissionalismo e credibilidade.",
   },
   {
     icon: Award,
-    title: "Excelência",
-    description: "Buscamos sempre a melhor solução para nossos clientes",
+    title: "Reconhecimento",
+    description:
+      "Referência em Fortaleza e Região Metropolitana pela ética e excelência nos serviços.",
   },
   {
-    icon: Target,
-    title: "Resultados",
-    description: "Focados em realizar o sonho do seu imóvel ideal",
-  },
-];
-
-const testimonials = [
-  {
-    name: "Maria Silva",
-    text: "Excelente atendimento! Encontrei o apartamento dos meus sonhos com a ajuda da equipe.",
-    role: "Cliente desde 2023",
+    icon: Users,
+    title: "Compromisso",
+    description:
+      "Atendimento humanizado e acompanhamento completo em cada etapa do processo.",
   },
   {
-    name: "João Santos",
-    text: "Profissionais competentes e dedicados. Recomendo a todos que buscam qualidade.",
-    role: "Investidor",
-  },
-  {
-    name: "Ana Paula",
-    text: "Realizei meu sonho de morar de frente para o mar. Gratidão por todo suporte!",
-    role: "Proprietária",
+    icon: MapPin,
+    title: "Atuação Regional",
+    description:
+      "Presença forte em Fortaleza, Eusébio e Caucaia, atendendo diferentes perfis e necessidades.",
   },
 ];
 
@@ -69,15 +55,16 @@ const About = () => {
 
         <div className="relative z-10 container mx-auto px-4 text-center text-primary-foreground animate-fade-up">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Nossa <span className="text-secondary">História</span>
+            Sobre <span className="text-secondary">Heleno Alves</span>
           </h1>
           <p className="text-xl md:text-2xl text-primary-foreground/90 max-w-3xl mx-auto">
-            Conectando pessoas aos melhores imóveis de Balneário Camboriú
+            Uma trajetória marcada por dedicação, confiança e liderança no
+            mercado imobiliário.
           </p>
         </div>
       </section>
 
-      {/* Sobre Nós */}
+      {/* Sobre Heleno */}
       <section className="py-20 bg-luxury-bg">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -85,22 +72,38 @@ const About = () => {
               <div className="flex items-center gap-2 mb-4">
                 <Users className="w-8 h-8 text-secondary" />
                 <span className="text-sm font-semibold text-secondary uppercase tracking-wider">
-                  Quem Somos
+                  Quem é Heleno Alves
                 </span>
               </div>
+
               <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Especialistas em <span className="text-secondary">Imóveis de Luxo</span>
+                Empresário e especialista em{" "}
+                <span className="text-secondary">mercado imobiliário</span>
               </h2>
+
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                Com anos de experiência no mercado imobiliário de Balneário
-                Camboriú, nos consolidamos como referência em imóveis de alto
-                padrão. Nossa equipe é formada por profissionais apaixonados
-                que entendem profundamente o mercado local.
+                Com uma carreira consolidada de quase <strong>30 anos</strong>,
+                Heleno Alves é reconhecido por sua forte atuação no mercado
+                imobiliário de Fortaleza e Região Metropolitana.
               </p>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Acreditamos que encontrar o imóvel perfeito vai além de uma
-                simples transação comercial. É sobre realizar sonhos,
-                proporcionar qualidade de vida e criar conexões duradouras.
+
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                Sua história começou em <strong>1998</strong>, quando iniciou
+                como corretor de imóveis. Pouco tempo depois, em{" "}
+                <strong>2000</strong>, ampliou suas competências atuando como
+                despachante imobiliário.
+              </p>
+
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                Desde <strong>2009</strong>, também exerce a função de
+                correspondente bancário, oferecendo consultoria completa em
+                financiamentos para facilitar a conquista da casa própria.
+              </p>
+
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Hoje, Heleno é proprietário de um grupo empresarial que atende
+                diferentes demandas do setor, sempre com ética, eficiência e um
+                compromisso inabalável com seus clientes.
               </p>
             </div>
 
@@ -108,7 +111,7 @@ const About = () => {
               <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-medium)]">
                 <img
                   src={propertyLuxury}
-                  alt="Nossa Equipe"
+                  alt="Heleno Alves"
                   className="w-full h-[500px] object-cover"
                 />
               </div>
@@ -118,21 +121,38 @@ const About = () => {
         </div>
       </section>
 
-      {/* Missão */}
+      {/* Carreira e Empresas */}
       <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center animate-fade-up">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary/10 mb-6">
-              <Target className="w-8 h-8 text-secondary" />
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Nossa Missão
+        <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
+          <div className="text-center animate-fade-up mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Uma Trajetória de <span className="text-secondary">Liderança</span>
             </h2>
-            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Transformar sonhos em realidade, oferecendo soluções
-              imobiliárias personalizadas e de excelência. Conectamos pessoas
-              aos melhores empreendimentos de Balneário Camboriú, sempre com
-              transparência, compromisso e dedicação.
+            <p className="text-lg text-muted-foreground">
+              Conheça os principais marcos da carreira de Heleno Alves
+            </p>
+          </div>
+
+          <div className="space-y-10 text-lg text-muted-foreground animate-fade-up">
+            <p>
+              Há <strong>19 anos</strong>, Heleno lidera uma imobiliária em
+              Fortaleza especializada no programa{" "}
+              <strong>Minha Casa Minha Vida</strong>, contribuindo diretamente
+              para transformar o sonho da casa própria em realidade para
+              milhares de famílias.
+            </p>
+
+            <p>
+              Sua visão empreendedora o levou, há <strong>3 anos</strong>, a
+              expandir sua atuação para a cidade do <strong>Eusébio</strong>,
+              onde administra uma imobiliária voltada para empreendimentos de
+              médio e alto padrão.
+            </p>
+
+            <p>
+              Além disso, Heleno gerencia uma correspondente bancária em{" "}
+              <strong>Caucaia</strong>, garantindo mais agilidade e segurança
+              nos processos de crédito imobiliário.
             </p>
           </div>
         </div>
@@ -143,10 +163,11 @@ const About = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-16 animate-fade-up">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Nossos <span className="text-secondary">Valores</span>
+              Valores que Guiam a{" "}
+              <span className="text-secondary">Sua Jornada</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Princípios que guiam nosso trabalho todos os dias
+              Princípios que constroem confiança e resultados
             </p>
           </div>
 
@@ -165,55 +186,12 @@ const About = () => {
                   <h3 className="text-xl font-bold text-foreground mb-2">
                     {value.title}
                   </h3>
-                  <p className="text-muted-foreground">{value.description}</p>
+                  <p className="text-muted-foreground">
+                    {value.description}
+                  </p>
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Depoimentos */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-16 animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              O Que Dizem <span className="text-secondary">Nossos Clientes</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Histórias de sucesso e satisfação
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-card p-8 rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-gold)] transition-all duration-300 hover:-translate-y-1 animate-fade-up"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="mb-6">
-                  <svg
-                    className="w-10 h-10 text-secondary/30"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                  </svg>
-                </div>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  "{testimonial.text}"
-                </p>
-                <div>
-                  <div className="font-bold text-foreground">
-                    {testimonial.name}
-                  </div>
-                  <div className="text-sm text-secondary">
-                    {testimonial.role}
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -222,18 +200,21 @@ const About = () => {
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Pronto para Encontrar Seu Imóvel Ideal?
+            Quer conhecer mais sobre o trabalho de Heleno Alves?
           </h2>
           <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-            Nossa equipe está pronta para ajudá-lo a realizar seu sonho
+            Entre em contato e permita que nossa equipe te acompanhe no seu
+            próximo passo.
           </p>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="gold" size="xl" asChild>
               <Link to="/contato">
-                Entre em Contato
+                Falar com a Equipe
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </Button>
+
             <Button variant="hero" size="xl" asChild>
               <Link to="/empreendimentos">Ver Empreendimentos</Link>
             </Button>
