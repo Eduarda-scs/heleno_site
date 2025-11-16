@@ -13,9 +13,12 @@ import {
   Users,
   Waves,
 } from "lucide-react";
+
 import cityAerial from "@/assets/city-aerial.jpg";
-import heroBalneario from "@/assets/hero-balneario.jpg";
+import heroPrincipal from "@/assets/heleno-hero2.png"; // 🔥 USANDO A MESMA DO INDEX
 import passarela from "@/assets/passarela.jpg";
+
+/* --------------------------- LISTAS --------------------------- */
 
 const cityStats = [
   { icon: Users, label: "População", value: "145 mil+" },
@@ -27,25 +30,22 @@ const cityStats = [
 const neighborhoods = [
   {
     name: "Centro",
-    description:
-      "Coração da cidade com infraestrutura completa e fácil acesso a tudo",
+    description: "Coração da cidade com infraestrutura completa e fácil acesso.",
     highlights: ["Praia Central", "Comércio", "Restaurantes"],
   },
   {
     name: "Barra Sul",
-    description:
-      "Exclusividade e tranquilidade em um dos bairros mais nobres",
+    description: "Exclusividade, alto padrão e total qualidade de vida.",
     highlights: ["Vista Mar", "Sofisticação", "Privacidade"],
   },
   {
     name: "Praia Brava",
-    description: "Natureza preservada e empreendimentos de alto padrão",
+    description: "Natureza preservada e empreendimentos de luxo.",
     highlights: ["Natureza", "Surf", "Alto Padrão"],
   },
   {
     name: "Pioneiros",
-    description:
-      "Localização estratégica com ótima relação custo-benefício",
+    description: "Local estratégico com excelente custo-benefício.",
     highlights: ["Acesso", "Comércio", "Residencial"],
   },
 ];
@@ -55,178 +55,155 @@ const investmentReasons = [
     icon: TrendingUp,
     title: "Valorização Constante",
     description:
-      "Imóveis em BC apresentam uma das maiores valorizações do Brasil",
+      "Uma das cidades que mais valoriza no Brasil, com investimentos contínuos.",
   },
   {
     icon: Heart,
     title: "Qualidade de Vida",
     description:
-      "Infraestrutura completa, segurança e lazer de primeiro mundo",
+      "Cidade segura, moderna, com lazer completo e infraestrutura impecável.",
   },
   {
     icon: Waves,
     title: "Turismo Premium",
     description:
-      "Destino consolidado que atrai turistas o ano todo",
+      "Capital do turismo de luxo no Sul do Brasil com fluxo anual intenso.",
   },
   {
     icon: Sparkles,
     title: "Infraestrutura Moderna",
-    description: "Cidade em constante desenvolvimento e expansão",
+    description:
+      "Obras, tecnologia, mobilidade e urbanismo que colocam BC no topo.",
   },
 ];
+
+/* ------------------------- COMPONENTE ------------------------- */
 
 const City = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden ">
+      {/* HERO */}
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroBalneario})` }}
+          style={{ backgroundImage: `url(${heroPrincipal})` }} // 🔥 AGORA CORRETO
         />
         <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/60 to-primary/80" />
 
-        <div className="relative z-10 container mx-auto px-4 text-center text-primary-foreground animate-fade-up">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+        <div className="relative z-10 container mx-auto px-4 text-center text-primary-foreground">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-up">
             Balneário Camboriú
           </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 max-w-3xl mx-auto">
-            A cidade que une modernidade, beleza natural e qualidade de vida excepcional
+          <p className="text-lg md:text-2xl max-w-3xl mx-auto animate-fade-up text-primary-foreground/90">
+            A cidade que une modernidade, praia, gastronomia e qualidade de vida.
           </p>
         </div>
       </section>
 
-      {/* Estatísticas Rápidas */}
-      <section className="py-16 bg-primary text-primary-foreground relative z-10">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {cityStats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className="text-center animate-fade-up"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <Icon className="w-10 h-10 mx-auto mb-3 text-secondary" />
-                  <div className="text-3xl font-bold mb-1">{stat.value}</div>
-                  <div className="text-sm text-primary-foreground/80">
-                    {stat.label}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+      {/* ESTATÍSTICAS — ajustado para mobile */}
+      <section className="py-12 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          {cityStats.map((stat, i) => {
+            const Icon = stat.icon;
+            return (
+              <div key={i} className="text-center animate-fade-up">
+                <Icon className="w-7 h-7 md:w-10 md:h-10 mx-auto mb-2 text-secondary" />
+                <p className="text-xl md:text-3xl font-bold">{stat.value}</p>
+                <p className="text-xs md:text-sm text-primary-foreground/80">
+                  {stat.label}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* Por Que Investir */}
+      {/* POR QUE INVESTIR — 2x2 no mobile */}
       <section className="py-20 bg-luxury-bg">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-16 animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Por Que <span className="text-secondary">Investir</span> em BC?
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Razões que fazem de Balneário Camboriú o melhor investimento
-            </p>
-          </div>
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-10">
+            Por Que <span className="text-secondary">Investir</span> em BC?
+          </h2>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {investmentReasons.map((reason, index) => {
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8">
+            {investmentReasons.map((reason, i) => {
               const Icon = reason.icon;
               return (
                 <div
-                  key={index}
-                  className="flex gap-6 p-8 bg-card rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-gold)] transition-all duration-300 hover:-translate-y-1 animate-fade-up"
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  key={i}
+                  className="bg-card p-4 md:p-8 rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-gold)] transition"
                 >
-                  <div className="w-14 h-14 flex-shrink-0 rounded-full bg-secondary/10 flex items-center justify-center">
-                    <Icon className="w-7 h-7 text-secondary" />
+                  <div className="w-12 h-12 flex items-center justify-center bg-secondary/10 rounded-full mb-2">
+                    <Icon className="w-5 h-5 text-secondary" />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-foreground mb-2">
-                      {reason.title}
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {reason.description}
-                    </p>
-                  </div>
+                  <h3 className="text-base md:text-xl font-bold">{reason.title}</h3>
+                  <p className="text-xs md:text-base text-muted-foreground mt-1">
+                    {reason.description}
+                  </p>
                 </div>
               );
             })}
           </div>
-
-          <div className="relative rounded-2xl overflow-hidden shadow-[var(--shadow-medium)]">
-            <img
-              src={cityAerial}
-              alt="Vista Aérea BC"
-              className="w-full h-[600px] object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent flex items-end">
-              <div className="p-12 text-primary-foreground max-w-2xl">
-                <h3 className="text-3xl md:text-4xl font-bold mb-4">
-                  Uma Cidade em Constante Evolução
-                </h3>
-                <p className="text-lg mb-6 text-primary-foreground/90">
-                  Balneário Camboriú não para de crescer e se modernizar.
-                  Novos empreendimentos, infraestrutura de ponta e eventos
-                  internacionais consolidam a cidade como referência em
-                  qualidade de vida.
-                </p>
-                <Button variant="gold" size="lg" asChild>
-                  <Link to="/empreendimentos">
-                    Ver Empreendimentos
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Melhores Bairros */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-16 animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Melhores <span className="text-secondary">Bairros</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Conheça as regiões mais procuradas da cidade
-            </p>
-          </div>
+      {/* BAIRROS — carrossel mobile */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-10">
+            Melhores <span className="text-secondary">Bairros</span>
+          </h2>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {neighborhoods.map((neighborhood, index) => (
+          {/* MOBILE CARROSSEL */}
+          <div className="flex md:hidden gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-none">
+            {neighborhoods.map((nb, i) => (
               <div
-                key={index}
-                className="bg-card p-8 rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-gold)] transition-all duration-300 hover:-translate-y-1 animate-fade-up"
-                style={{ animationDelay: `${index * 100}ms` }}
+                key={i}
+                className="min-w-[80%] snap-center bg-card p-6 rounded-xl shadow"
               >
-                <div className="flex items-start gap-3 mb-4">
-                  <MapPin className="w-6 h-6 text-secondary flex-shrink-0 mt-1" />
+                <div className="flex items-start gap-3 mb-3">
+                  <MapPin className="w-5 h-5 text-secondary" />
                   <div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2">
-                      {neighborhood.name}
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {neighborhood.description}
-                    </p>
+                    <h3 className="text-xl font-bold">{nb.name}</h3>
+                    <p className="text-muted-foreground text-sm">{nb.description}</p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {neighborhood.highlights.map((highlight, i) => (
+                <div className="flex flex-wrap gap-2">
+                  {nb.highlights.map((tag, j) => (
                     <span
-                      key={i}
-                      className="px-3 py-1 bg-secondary/10 text-secondary text-sm font-medium rounded-full"
+                      key={j}
+                      className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-xs"
                     >
-                      {highlight}
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* DESKTOP */}
+          <div className="hidden md:grid grid-cols-2 gap-8">
+            {neighborhoods.map((nb, i) => (
+              <div key={i} className="p-8 bg-card rounded-xl shadow">
+                <div className="flex items-start gap-3 mb-4">
+                  <MapPin className="w-6 h-6 text-secondary" />
+                  <div>
+                    <h3 className="text-2xl font-bold">{nb.name}</h3>
+                    <p className="text-muted-foreground">{nb.description}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {nb.highlights.map((tag, j) => (
+                    <span
+                      key={j}
+                      className="px-3 py-1 bg-secondary/10 text-secondary text-sm rounded-full"
+                    >
+                      {tag}
                     </span>
                   ))}
                 </div>
@@ -236,58 +213,49 @@ const City = () => {
         </div>
       </section>
 
-      {/* Lifestyle Section */}
+      {/* LIFESTYLE */}
       <section className="py-20 bg-luxury-bg">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="order-2 md:order-1 animate-fade-up">
-              <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-medium)]">
-                <img
-                  src={passarela}
-                  alt="Lifestyle BC"
-                  className="w-full h-[600px] object-cover"
-                />
-              </div>
-            </div>
+        <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+          <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-medium)]">
+            <img
+              src={passarela}
+              className="w-full h-[350px] md:h-[550px] object-cover"
+              alt="Lifestyle"
+            />
+          </div>
 
-            <div className="order-1 md:order-2 animate-fade-up">
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Lifestyle <span className="text-secondary">Premium</span>
-              </h2>
-              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                Balneário Camboriú oferece um estilo de vida incomparável.
-                Praias paradisíacas, gastronomia internacional, vida noturna
-                agitada e espaços de lazer para toda a família.
-              </p>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                A cidade combina o melhor de dois mundos: a tranquilidade de
-                um balneário e a infraestrutura de uma grande metrópole.
-              </p>
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+              Lifestyle <span className="text-secondary">Premium</span>
+            </h2>
 
-              <ul className="space-y-4 mb-8">
-                {[
-                  "Praias de águas cristalinas",
-                  "Restaurantes premiados",
-                  "Shopping centers de luxo",
-                  "Eventos culturais e esportivos",
-                  "Parques e espaços verdes",
-                ].map((item, index) => (
-                  <li key={index} className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                      <ArrowRight className="w-4 h-4 text-secondary" />
-                    </div>
-                    <span className="text-foreground">{item}</span>
-                  </li>
-                ))}
-              </ul>
+            <p className="text-lg text-muted-foreground mb-6">
+              Balneário Camboriú combina natureza, luxo, gastronomia e lazer
+              para oferecer um estilo de vida incomparável.
+            </p>
 
-              <Button variant="hero" size="lg" asChild>
-                <Link to="/empreendimentos">
-                  Encontre Seu Imóvel
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </Button>
-            </div>
+            <ul className="space-y-4 mb-8">
+              {[
+                "Praias de águas cristalinas",
+                "Restaurantes renomados",
+                "Vida noturna sofisticada",
+                "Eventos culturais e esportivos",
+                "Shopping centers de luxo",
+              ].map((item, i) => (
+                <li key={i} className="flex items-center gap-3">
+                  <div className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center">
+                    <ArrowRight className="w-4 h-4 text-secondary" />
+                  </div>
+                  <span className="text-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <Button variant="hero" size="lg" asChild>
+              <Link to="/empreendimentos">
+                Encontre Seu Imóvel <ArrowRight className="w-5 h-5 ml-1" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
