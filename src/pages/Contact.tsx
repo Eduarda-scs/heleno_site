@@ -28,8 +28,8 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email",
-    info: "contato@bcimoveis.com.br",
-    link: "mailto:contato@bcimoveis.com.br",
+    info: "helenohapastasdocs@gmail.com",
+    link: "mailto:helenohapastasdocs@gmail.com",
   },
   {
     icon: MapPin,

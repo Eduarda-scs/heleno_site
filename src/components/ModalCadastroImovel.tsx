@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { X, Plus } from "lucide-react";
 import supabase from "@/utility/supabaseClient";
 import { createImovel } from "@/components/ImageEvents";
-import {getCaracteristicas} from "@/components/supabaseActions";
+import { getCaracteristicas } from "@/components/supabaseActions";
 
 export default function ModalCadastroImovel({ open, onClose, onSave }) {
   const [step, setStep] = useState(1);
@@ -122,10 +122,9 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
     else setLista([...lista, item]);
   };
 
-  // FOTOS / VÍDEOS
+  // FOTOS / VÍDEOS (ILIMITADOS)
   const handleFiles = (e, tipo) => {
     if (!e.target.files) return;
-
     const filesArray = Array.from(e.target.files);
 
     if (tipo === "foto") {
@@ -188,10 +187,8 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
           {/* CONTEÚDO */}
           <div className="flex-1 overflow-auto p-6 text-black-200">
             {step === 1 ? (
-
               /* ------------------------- PASSO 1 -------------------------- */
               <div className="space-y-6">
-
                 {/* FORM */}
                 <div className="grid grid-cols-12 gap-4">
                   <div className="col-span-12 lg:col-span-6 space-y-4">
@@ -229,7 +226,7 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
 
                 {/* CARACTERÍSTICAS E CONDOMÍNIO */}
                 <div className="border-t border-[rgba(120,160,255,0.15)] pt-4 grid grid-cols-12 gap-4">
-                  
+
                   {/* Características */}
                   <div className="col-span-12 lg:col-span-6">
                     <h4 className="text-sm font-semibold text-blue-100 mb-2">Características</h4>
@@ -265,22 +262,18 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
                     </div>
                   </div>
 
-                  
-
                 </div>
               </div>
-
             ) : (
-
               /* ------------------------- PASSO 2 -------------------------- */
               <div className="space-y-6">
 
-                {/* FOTOS */}
+                {/* FOTOS ILIMITADAS */}
                 <div>
                   <label className="text-blue-100">Adicionar Fotos</label>
                   <div className="mt-2 flex items-center gap-3">
                     <Input type="file" accept="image/*" multiple onChange={(e) => handleFiles(e, "foto")} />
-                    <span className="text-sm text-blue-200">Máx. 12 fotos</span>
+                    <span className="text-sm text-blue-200">Fotos ilimitadas</span>
                   </div>
 
                   {fotos.length > 0 && (
@@ -300,12 +293,12 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
                   )}
                 </div>
 
-                {/* VÍDEOS */}
+                {/* VÍDEOS ILIMITADOS */}
                 <div>
                   <label className="text-blue-100">Adicionar Vídeos</label>
                   <div className="mt-2 flex items-center gap-3">
                     <Input type="file" accept="video/*" multiple onChange={(e) => handleFiles(e, "video")} />
-                    <span className="text-sm text-blue-200">MP4, WEBM</span>
+                    <span className="text-sm text-blue-200">Vídeos ilimitados</span>
                   </div>
 
                   {videos.length > 0 && (

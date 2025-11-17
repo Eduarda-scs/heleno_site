@@ -56,7 +56,7 @@ export const Header = () => {
               <img 
                 src={logo}// coloque o caminho da sua logo aqui
                 alt="Heleno Alves" 
-                className="h-10 w-auto"  // ajuste o tamanho como quiser
+                className="h-[120px] w-auto"  // ajuste o tamanho como quiser
               />
             </Link>
             {/* MENU DESKTOP */}

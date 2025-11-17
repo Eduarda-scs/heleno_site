@@ -40,19 +40,19 @@ export const Footer = () => {
               <li className="flex items-center gap-2 text-sm text-primary-foreground/80">
                 <Phone className="w-4 h-4 flex-shrink-0 text-secondary" />
                 <a
-                  href="tel:+5547999999999"
+                  href="https://wa.me/554792639593"
                   className="hover:text-secondary transition-colors"
                 >
-                  (47) 99999-9999
+                  (47) 9263-9593
                 </a>
               </li>
               <li className="flex items-center gap-2 text-sm text-primary-foreground/80">
                 <Mail className="w-4 h-4 flex-shrink-0 text-secondary" />
                 <a
-                  href="mailto:contato@bcimoveis.com.br"
+                  href="mailto:helenohapastasdocs@gmail.com"
                   className="hover:text-secondary transition-colors"
                 >
-                  contato@bcimoveis.com.br
+                  helenohapastasdocs@gmail.com
                 </a>
               </li>
             </ul>
