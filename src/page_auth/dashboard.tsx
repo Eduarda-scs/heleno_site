@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-zinc-600 flex flex-col">
       <Header />
 
       <main className="flex-1 flex flex-col justify-center items-center px-6 text-center">
