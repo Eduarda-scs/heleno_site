@@ -1,4 +1,5 @@
 // ModalCadastroImovel.jsx
+
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -43,7 +44,8 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
   const [condominioBanco, setCondominioBanco] = useState([]);
 
   // SELECIONADAS
-  const [caracteristicasSelecionadas, setCaracteristicasSelecionadas] = useState([]);
+  const [caracteristicasSelecionadas, setCaracteristicasSelecionadas] =
+    useState([]);
   const [condominioSelecionado, setCondominioSelecionado] = useState([]);
 
   // INPUTS PARA ADICIONAR
@@ -118,19 +120,28 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
   };
 
   const toggleItem = (item, lista, setLista) => {
-    if (lista.includes(item)) setLista(lista.filter((i) => i !== item));
+    if (lista.includes(item))
+      setLista(lista.filter((i) => i !== item));
     else setLista([...lista, item]);
   };
 
-  // FOTOS / VÍDEOS (ILIMITADOS)
+  // 🔥 ORDENAR MÍDIA POR DATA (mais recente primeiro)
+  const ordenarMedia = (array) => {
+    return [...array].sort((a, b) => b.lastModified - a.lastModified);
+  };
+
+  // FOTOS / VÍDEOS (COM ORDENAÇÃO)
   const handleFiles = (e, tipo) => {
     if (!e.target.files) return;
+
     const filesArray = Array.from(e.target.files);
 
     if (tipo === "foto") {
-      setFotos((prev) => [...prev, ...filesArray]);
+      const novoArray = ordenarMedia([...fotos, ...filesArray]);
+      setFotos(novoArray);
     } else {
-      setVideos((prev) => [...prev, ...filesArray]);
+      const novoArray = ordenarMedia([...videos, ...filesArray]);
+      setVideos(novoArray);
     }
   };
 
@@ -145,20 +156,23 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
   // ENVIO FINAL
   const handleEnviar = async () => {
     setLoading(true);
+
     try {
       const payload = {
         ...form,
         caracteristicas: caracteristicasSelecionadas.join(","),
         condominio: condominioSelecionado.join(","),
-        fotos,
-        videos,
+        foto: [...fotos, ...videos], // Ordenação já aplicada
       };
+
+      console.log(payload);
 
       await createImovel(payload);
 
       setAlert({ message: "Imóvel cadastrado com sucesso!", success: true });
       onSave();
-    } catch {
+    } catch (error) {
+      console.error("Erro no envio do imóvel:", error);
       setAlert({ message: "Erro ao cadastrar imóvel", success: false });
     } finally {
       setLoading(false);
@@ -179,7 +193,11 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
             <h3 className="text-xl md:text-2xl font-semibold text-white">
               {step === 1 ? "Cadastrar Imóvel" : "Adicionar Fotos e Vídeos"}
             </h3>
-            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-md">
+
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-md"
+            >
               <X className="w-5 h-5 text-blue-200" />
             </button>
           </div>
@@ -187,140 +205,165 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
           {/* CONTEÚDO */}
           <div className="flex-1 overflow-auto p-6 text-black-200">
             {step === 1 ? (
-              /* ------------------------- PASSO 1 -------------------------- */
-              <div className="space-y-6">
-                {/* FORM */}
-                <div className="grid grid-cols-12 gap-4">
-                  <div className="col-span-12 lg:col-span-6 space-y-4">
-                    <Input name="titulo" placeholder="Título" value={form.titulo} onChange={handleChange} />
-                    <Input name="nome_anunciante" placeholder="Nome do anunciante" value={form.nome_anunciante} onChange={handleChange} />
-                    <Input name="tipo" placeholder="Tipo (Casa, Apto...)" value={form.tipo} onChange={handleChange} />
-                    <Input name="negociacao" placeholder="Negociação" value={form.negociacao} onChange={handleChange} />
+              <>
+                {/* PASSO 1 */}
+                <div className="space-y-6">
+                  <div className="grid grid-cols-12 gap-4">
+                    <div className="col-span-12 lg:col-span-6 space-y-4">
+                      <Input name="titulo" placeholder="Título" value={form.titulo} onChange={handleChange} />
+                      <Input name="nome_anunciante" placeholder="Nome do anunciante" value={form.nome_anunciante} onChange={handleChange} />
+                      <Input name="tipo" placeholder="Tipo (Casa, Apto...)" value={form.tipo} onChange={handleChange} />
+                      <Input name="negociacao" placeholder="Negociação" value={form.negociacao} onChange={handleChange} />
 
-                    <div className="grid grid-cols-3 gap-2">
-                      <Input name="quartos" placeholder="Quartos" type="number" value={form.quartos} onChange={handleChange} />
-                      <Input name="banheiros" placeholder="Banheiros" type="number" value={form.banheiros} onChange={handleChange} />
-                      <Input name="vagas" placeholder="Vagas" type="number" value={form.vagas} onChange={handleChange} />
+                      <div className="grid grid-cols-3 gap-2">
+                        <Input name="quartos" type="number" placeholder="Quartos" value={form.quartos} onChange={handleChange} />
+                        <Input name="banheiros" type="number" placeholder="Banheiros" value={form.banheiros} onChange={handleChange} />
+                        <Input name="vagas" type="number" placeholder="Vagas" value={form.vagas} onChange={handleChange} />
+                      </div>
+
+                      <Input name="metros" type="number" placeholder="Metros quadrados" value={form.metros} onChange={handleChange} />
                     </div>
 
-                    <Input name="metros" placeholder="Metros quadrados" type="number" value={form.metros} onChange={handleChange} />
+                    <div className="col-span-12 lg:col-span-6 space-y-4">
+                      <Textarea name="descricao" placeholder="Descrição" rows={6} value={form.descricao} onChange={handleChange} />
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <Input name="cidade" placeholder="Cidade" value={form.cidade} onChange={handleChange} />
+                        <Input name="bairro" placeholder="Bairro" value={form.bairro} onChange={handleChange} />
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2">
+                        <Input name="rua" placeholder="Rua" value={form.rua} onChange={handleChange} />
+                        <Input name="numero" type="number" placeholder="Número" value={form.numero} onChange={handleChange} />
+                        <Input name="cep" placeholder="CEP" value={form.cep} onChange={handleChange} />
+                      </div>
+
+                      <Input name="valor" type="number" placeholder="Valor (R$)" value={form.valor} onChange={handleChange} />
+                    </div>
                   </div>
 
-                  <div className="col-span-12 lg:col-span-6 space-y-4">
-                    <Textarea name="descricao" placeholder="Descrição" value={form.descricao} onChange={handleChange} rows={6} />
+                  {/* CARACTERISTICAS */}
+                  <div className="border-t border-[rgba(120,160,255,0.15)] pt-4 grid grid-cols-12 gap-4">
+                    <div className="col-span-12 lg:col-span-6">
+                      <h4 className="text-sm font-semibold text-blue-100 mb-2">
+                        Características
+                      </h4>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input name="cidade" placeholder="Cidade" value={form.cidade} onChange={handleChange} />
-                      <Input name="bairro" placeholder="Bairro" value={form.bairro} onChange={handleChange} />
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2">
-                      <Input name="rua" placeholder="Rua" value={form.rua} onChange={handleChange} />
-                      <Input name="numero" placeholder="Número" type="number" value={form.numero} onChange={handleChange} />
-                      <Input name="cep" placeholder="CEP" value={form.cep} onChange={handleChange} />
-                    </div>
-
-                    <Input name="valor" placeholder="Valor (R$)" type="number" value={form.valor} onChange={handleChange} />
-                  </div>
-                </div>
-
-                {/* CARACTERÍSTICAS E CONDOMÍNIO */}
-                <div className="border-t border-[rgba(120,160,255,0.15)] pt-4 grid grid-cols-12 gap-4">
-
-                  {/* Características */}
-                  <div className="col-span-12 lg:col-span-6">
-                    <h4 className="text-sm font-semibold text-blue-100 mb-2">Características</h4>
-
-                    <div className="flex gap-2 mb-3">
-                      <Input
-                        value={novaCaracteristica}
-                        onChange={(e) => setNovaCaracteristica(e.target.value)}
-                        placeholder="Nova característica"
-                      />
-                      <Button onClick={adicionarCaracteristica} className="bg-blue-600 text-white">
-                        <Plus size={16} />
-                      </Button>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {caracteristicasBanco.map((c, i) => (
-                        <label
-                          key={i}
-                          className={`flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer ${
-                            caracteristicasSelecionadas.includes(c)
-                              ? "bg-blue-600 text-white"
-                              : "bg-blue-900/30 text-blue-100"
-                          }`}
-                          onClick={() =>
-                            toggleItem(c, caracteristicasSelecionadas, setCaracteristicasSelecionadas)
-                          }
+                      <div className="flex gap-2 mb-3">
+                        <Input
+                          value={novaCaracteristica}
+                          onChange={(e) => setNovaCaracteristica(e.target.value)}
+                          placeholder="Nova característica"
+                        />
+                        <Button
+                          onClick={adicionarCaracteristica}
+                          className="bg-blue-600 text-white"
                         >
-                          <input type="checkbox" checked={caracteristicasSelecionadas.includes(c)} readOnly />
-                          {c}
-                        </label>
-                      ))}
+                          <Plus size={16} />
+                        </Button>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {caracteristicasBanco.map((c, i) => (
+                          <label
+                            key={i}
+                            className={`flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer ${
+                              caracteristicasSelecionadas.includes(c)
+                                ? "bg-blue-600 text-white"
+                                : "bg-blue-900/30 text-blue-100"
+                            }`}
+                            onClick={() =>
+                              toggleItem(
+                                c,
+                                caracteristicasSelecionadas,
+                                setCaracteristicasSelecionadas
+                              )
+                            }
+                          >
+                            <input
+                              type="checkbox"
+                              checked={caracteristicasSelecionadas.includes(c)}
+                              readOnly
+                            />
+                            {c}
+                          </label>
+                        ))}
+                      </div>
                     </div>
                   </div>
-
                 </div>
-              </div>
+              </>
             ) : (
-              /* ------------------------- PASSO 2 -------------------------- */
-              <div className="space-y-6">
+              <>
+                {/* PASSO 2 */}
+                <div className="space-y-6">
+                  {/* FOTOS */}
+                  <div>
+                    <label className="text-blue-100">Adicionar Fotos</label>
 
-                {/* FOTOS ILIMITADAS */}
-                <div>
-                  <label className="text-blue-100">Adicionar Fotos</label>
-                  <div className="mt-2 flex items-center gap-3">
-                    <Input type="file" accept="image/*" multiple onChange={(e) => handleFiles(e, "foto")} />
-                    <span className="text-sm text-blue-200">Fotos ilimitadas</span>
+                    <div className="mt-2 flex items-center gap-3">
+                      <Input type="file" accept="image/*" multiple onChange={(e) => handleFiles(e, "foto")} />
+                      <span className="text-sm text-blue-200">Fotos ilimitadas</span>
+                    </div>
+
+                    {fotos.length > 0 && (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
+                        {fotos.map((file, i) => (
+                          <div
+                            key={i}
+                            className="relative bg-blue-900/20 rounded-md overflow-hidden border border-blue-500/20"
+                            style={{ aspectRatio: "1/1" }}
+                          >
+                            <img
+                              src={URL.createObjectURL(file)}
+                              className="w-full h-full object-cover"
+                            />
+
+                            <button
+                              onClick={() => handleRemoveFile(i, "foto")}
+                              className="absolute top-2 right-2 bg-blue-900/60 text-white rounded-full p-1"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  {fotos.length > 0 && (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
-                      {fotos.map((file, i) => (
-                        <div key={i} className="relative bg-blue-900/20 rounded-md overflow-hidden border border-blue-500/20" style={{ aspectRatio: "1/1" }}>
-                          <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" />
-                          <button
-                            onClick={() => handleRemoveFile(i, "foto")}
-                            className="absolute top-2 right-2 bg-blue-900/60 text-white rounded-full p-1"
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                  {/* VÍDEOS */}
+                  <div>
+                    <label className="text-blue-100">Adicionar Vídeos</label>
 
-                {/* VÍDEOS ILIMITADOS */}
-                <div>
-                  <label className="text-blue-100">Adicionar Vídeos</label>
-                  <div className="mt-2 flex items-center gap-3">
-                    <Input type="file" accept="video/*" multiple onChange={(e) => handleFiles(e, "video")} />
-                    <span className="text-sm text-blue-200">Vídeos ilimitados</span>
+                    <div className="mt-2 flex items-center gap-3">
+                      <Input type="file" accept="video/*" multiple onChange={(e) => handleFiles(e, "video")} />
+                      <span className="text-sm text-blue-200">Vídeos ilimitados</span>
+                    </div>
+
+                    {videos.length > 0 && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4">
+                        {videos.map((file, i) => (
+                          <div
+                            key={i}
+                            className="relative bg-blue-900/20 rounded-md overflow-hidden border border-blue-500/20"
+                          >
+                            <video controls className="w-full h-48 object-cover">
+                              <source src={URL.createObjectURL(file)} type={file.type} />
+                            </video>
+
+                            <button
+                              onClick={() => handleRemoveFile(i, "video")}
+                              className="absolute top-2 right-2 bg-blue-900/70 text-white rounded-full p-1"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-
-                  {videos.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4">
-                      {videos.map((file, i) => (
-                        <div key={i} className="relative bg-blue-900/20 rounded-md overflow-hidden border border-blue-500/20">
-                          <video controls className="w-full h-48 object-cover">
-                            <source src={URL.createObjectURL(file)} type={file.type} />
-                          </video>
-                          <button
-                            onClick={() => handleRemoveFile(i, "video")}
-                            className="absolute top-2 right-2 bg-blue-900/70 text-white rounded-full p-1"
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
-
-              </div>
+              </>
             )}
           </div>
 
@@ -336,9 +379,14 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
 
             <Button
               className="bg-blue-600 hover:bg-blue-500 text-white"
+              disabled={loading}
               onClick={() => (step === 1 ? setStep(2) : handleEnviar())}
             >
-              {step === 1 ? "Próximo" : loading ? "Enviando..." : "Enviar Imóvel"}
+              {step === 1
+                ? "Próximo"
+                : loading
+                ? "Processando Vídeos..."
+                : "Enviar Imóvel"}
             </Button>
           </div>
         </DialogContent>
@@ -348,10 +396,10 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
       {alert && (
         <div
           className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 rounded-2xl shadow-2xl z-[99999] ${
-            alert.success ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"
-          }`}
+            alert.success ? "bg-emerald-600" : "bg-red-600"
+          } text-white`}
         >
-          <p className="text-lg font-semibold">{alert.message}</p>
+          {alert.message}
         </div>
       )}
     </>

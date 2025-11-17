@@ -39,16 +39,20 @@ const PropertyDetails = () => {
       return;
     }
 
+    // ⬇⬇⬇ AJUSTE AQUI: usa a coluna "url" contendo array de imagens em TEXT ⬇⬇⬇
     let fotosArray: any[] = [];
-    if (data.images) {
+    if (data.url) {
       try {
-        const parsed = JSON.parse(data.images);
-        fotosArray = parsed.map((item: any) => ({
+        const parsed = JSON.parse(data.url);
+        fotosArray = parsed.map((url: string) => ({
           type: "image",
-          url: item.url,
+          url,
         }));
-      } catch {}
+      } catch (e) {
+        console.error("Erro ao parsear coluna URL:", e);
+      }
     }
+    // ⬆⬆⬆ FIM DO AJUSTE ⬆⬆⬆
 
     let videosArray: any[] = [];
     if (data.videos) {
@@ -93,7 +97,6 @@ const PropertyDetails = () => {
   // ORGANIZAÇÃO
   const heroImage = property.fotos[0]?.url || "";
 
-  // 🔥 AGORA a galeria inclui o hero como item 0 também
   const gallery = [
     ...(heroImage ? [{ type: "image", url: heroImage }] : []),
     ...property.fotos.slice(1),
@@ -135,7 +138,6 @@ const PropertyDetails = () => {
         />
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
 
-        {/* BOTÃO VOLTAR (z-index MUITO ALTO) */}
         <div className="absolute top-6 left-6 z-[99999]">
           <Link
             to="/empreendimentos"
@@ -216,66 +218,65 @@ const PropertyDetails = () => {
               </div>
 
               {/* GALERIA */}
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Galeria</h2>
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Galeria</h2>
 
-              {/* MOBILE — CARROSSEL */}
-              <div className="flex gap-4 overflow-x-auto sm:hidden snap-x snap-mandatory pb-3">
-                {gallery.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    className="min-w-[80%] h-64 rounded-xl overflow-hidden snap-center cursor-pointer relative"
-                    onClick={() => openLightbox(index)}
-                  >
-                    {item.type === "image" ? (
-                      <img
-                        src={item.url}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <video
-                        src={item.url}
-                        className="w-full h-full object-cover"
-                        muted
-                        playsInline
-                      />
-                    )}
-                  </div>
-                ))}
+                {/* MOBILE */}
+                <div className="flex gap-4 overflow-x-auto sm:hidden snap-x snap-mandatory pb-3">
+                  {gallery.map((item: any, index: number) => (
+                    <div
+                      key={index}
+                      className="min-w-[80%] h-64 rounded-xl overflow-hidden snap-center cursor-pointer relative"
+                      onClick={() => openLightbox(index)}
+                    >
+                      {item.type === "image" ? (
+                        <img
+                          src={item.url}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <video
+                          src={item.url}
+                          className="w-full h-full object-cover"
+                          muted
+                          playsInline
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* DESKTOP */}
+                <div className="hidden sm:grid grid-cols-2 gap-4">
+                  {visibleGallery.map((item: any, index: number) => (
+                    <div
+                      key={index}
+                      onClick={() => openLightbox(index)}
+                      className="relative overflow-hidden rounded-xl cursor-pointer group"
+                    >
+                      {item.type === "image" ? (
+                        <img
+                          src={item.url}
+                          className="w-full h-64 object-cover group-hover:scale-105 transition"
+                        />
+                      ) : (
+                        <video
+                          src={item.url}
+                          className="w-full h-64 object-cover"
+                          muted
+                          playsInline
+                        />
+                      )}
+
+                      {index === 3 && extraMedia > 0 && (
+                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-2xl font-semibold">
+                          +{extraMedia} mídias
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-
-              {/* DESKTOP — GRID 2x2 */}
-              <div className="hidden sm:grid grid-cols-2 gap-4">
-                {visibleGallery.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    onClick={() => openLightbox(index)}
-                    className="relative overflow-hidden rounded-xl cursor-pointer group"
-                  >
-                    {item.type === "image" ? (
-                      <img
-                        src={item.url}
-                        className="w-full h-64 object-cover group-hover:scale-105 transition"
-                      />
-                    ) : (
-                      <video
-                        src={item.url}
-                        className="w-full h-64 object-cover"
-                        muted
-                        playsInline
-                      />
-                    )}
-
-                    {index === 3 && extraMedia > 0 && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-2xl font-semibold">
-                        +{extraMedia} mídias
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
             </div>
 
             {/* SIDEBAR */}

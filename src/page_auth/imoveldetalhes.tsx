@@ -1,22 +1,12 @@
-"use client";
-
-import { useState, useEffect } from "react";
+"use client"
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import supabase from "@/utility/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { X } from "lucide-react";
-import {getImovelById} from "@/components/supabaseActions";
-import {deletebyid} from "@/components/supabaseActions";
- 
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL;
 
 export default function ImovelDetalhes() {
@@ -27,33 +17,15 @@ export default function ImovelDetalhes() {
   const [editando, setEditando] = useState(false);
   const [form, setForm] = useState<any>({});
   const [midias, setMidias] = useState<(string | File)[]>([]);
-  const [videos, setVideos] = useState<(string | File)[]>([]);
   const [showExcluirModal, setShowExcluirModal] = useState(false);
-  const [saving, setSaving] = useState(false);
 
-  // --- CARREGAR DO SUPABASE ---
+  // 🔹 Carrega o imóvel do Supabase
   async function carregarImovel() {
-    const { data, error } = await getImovelById(id);
-
+    const { data, error } = await supabase.from("heleno_imoveis").select("*").eq("id", id).single();
     if (!error && data) {
       setImovel(data);
-
       setForm({
-        titulo: data.titulo ?? "",
-        descricao: data.descricao ?? "",
-        cidade: data.cidade ?? "",
-        bairro: data.bairro ?? "",
-        rua: data.rua ?? "",
-        numero: data.numero ?? "",
-        cep: data.cep ?? "",
-        valor: data.valor ?? "",
-        negociacao: data.negociacao ?? "",
-        tipo: data.tipo ?? "",
-        nome_anunciante: data.nome_anunciante ?? "",
-        quartos: data.quartos ?? "",
-        banheiros: data.banheiros ?? "",
-        vagas: data.vagas ?? "",
-        metros: data.metros ?? "",
+        ...data,
         caracteristicas:
           typeof data.caracteristicas === "string"
             ? data.caracteristicas
@@ -68,132 +40,93 @@ export default function ImovelDetalhes() {
             : "",
       });
 
+      // 🔹 Lê o campo url (JSON)
       let urls: string[] = [];
       try {
-        if (data.images) {
-          if (typeof data.images === "string") {
-            urls = JSON.parse(data.images).map((i: any) => i.url);
-          } else if (Array.isArray(data.images)) {
-            urls = data.images.map((i: any) => i.url || i);
-          }
+        if (typeof data.url === "object" && data.url !== null) {
+          urls = Object.values(data.url);
+        } else if (typeof data.url === "string") {
+          const parsed = JSON.parse(data.url);
+          urls = Object.values(parsed);
         }
       } catch {
         urls = [];
       }
 
-      let vids: string[] = [];
-        try {
-          if (data.videos) {
-            if (typeof data.videos === "string") {
-              vids = JSON.parse(data.videos);
-            } else if (Array.isArray(data.videos)) {
-              vids = data.videos;
-            }
-          }
-        } catch {
-          vids = [];
-        }
-        setVideos(vids);
-
-
       setMidias(urls);
-      setVideos(vids);
     }
   }
 
   useEffect(() => {
-    if (id) carregarImovel();
+    carregarImovel();
   }, [id]);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev: any) => ({ ...prev, [name]: value }));
   };
 
-  // --- EXCLUIR ---
   const handleExcluir = async () => {
-    const { error } = await deletebyid (id);
-
+    const { error } = await supabase.from("heleno_imoveis").delete().eq("id", id);
     if (!error) {
       setShowExcluirModal(false);
-      alert("Imóvel excluído com sucesso.");
+      alert("Imóvel excluído com sucesso!");
       navigate("/Cadastroimoveis");
-    } else {
-      alert("Erro ao excluir.");
     }
   };
 
-  // --- ATUALIZAR VIA WEBHOOK ---
+  // 🔹 Atualiza o imóvel via webhook (N8N)
   const handleAtualizar = async () => {
-    setSaving(true);
+    const formData = new FormData();
+    formData.append("funcao", "atualizar_imovel");
+    
+
+    Object.entries(form).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, String(value));
+      }
+    });
+
+    formData.append("id", String(id));
+
+    // 🔹 Envia TODAS as mídias atuais (antigas + novas)
+    midias.forEach((m) => {
+      if (m instanceof File) {
+        formData.append("midia", m);
+      } else {
+        formData.append("midia_url", m);
+      }
+    });
 
     try {
-      const formData = new FormData();
-
-      formData.append("funcao", "atualizar_imovel");
-      formData.append("id", String(id));
-
-      Object.entries(form).forEach(([k, v]) => {
-        formData.append(k, String(v));
-      });
-
-      midias.forEach((m) => {
-        if (m instanceof File) formData.append("midia", m);
-        else formData.append("midia_url", m);
-      });
-
-      videos.forEach((v) => {
-        if (v instanceof File) formData.append("video", v);
-        else formData.append("video_url", v);
-      });
-
-      const resp = await fetch(WEBHOOK_URL, {
+      const response = await fetch(WEBHOOK_URL, {
         method: "POST",
         body: formData,
       });
 
-      if (resp.ok) {
-        alert("Imóvel atualizado!");
+      if (response.ok) {
+        alert("Imóvel atualizado com sucesso via webhook!");
         setEditando(false);
         carregarImovel();
       } else {
-        alert("Erro ao enviar dados.");
+        alert("Erro ao enviar dados para o webhook.");
       }
-    } catch {
-      alert("Erro ao enviar.");
+    } catch (error) {
+      console.error("Erro ao enviar para o webhook:", error);
     }
-
-    setSaving(false);
   };
 
-  // CORRIGIDO: TIPO EXPLÍCITO EM MIDIAS
   const handleAddMidia = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files) as File[];
-      setMidias((prev: (string | File)[]) => [...prev, ...files]);
-    }
+    const files = e.target.files;
+    if (!files) return;
+    setMidias((prev) => [...prev, ...Array.from(files)]);
   };
 
-  // CORRIGIDO: TIPO EXPLÍCITO EM VIDEOS 
-  const handleAddVideo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files) as File[];
-      setVideos((prev: (string | File)[]) => [...prev, ...files]);
-    }
+  const handleRemoveMidia = (index: number) => {
+    setMidias((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleRemoveMidia = (i: number) =>
-    setMidias((prev) => prev.filter((_, idx) => idx !== i));
-
-  const handleRemoveVideo = (i: number) =>
-    setVideos((prev) => prev.filter((_, idx) => idx !== i));
-
-  if (!imovel)
-    return (
-      <div className="pt-24 container mx-auto px-4">
-        <p>Carregando...</p>
-      </div>
-    );
+  if (!imovel) return <p className="p-6">Carregando detalhes...</p>;
 
   const camposNumericos = ["valor", "cep", "quartos", "banheiros", "metros", "vagas"];
   const camposTexto = [
@@ -210,115 +143,121 @@ export default function ImovelDetalhes() {
   ];
 
   return (
-    <main className="pt-24 pb-12">
-      <div className="container mx-auto px-4">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold">
-            Detalhes do <span className="text-yellow-600">Imóvel</span>
-          </h1>
-        </header>
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Detalhes do Imóvel</h1>
+        {!editando && (
+          <div className="flex gap-3">
+            <Button onClick={() => setEditando(true)}>Atualizar</Button>
+            <Button variant="destructive" onClick={() => setShowExcluirModal(true)}>
+              Excluir
+            </Button>
+          </div>
+        )}
+      </div>
 
-        <div className="flex justify-end gap-3 mb-6">
+      {/* --- Informações --- */}
+      <Card className="p-6">
+        <CardHeader>
+          <CardTitle>{imovel.titulo}</CardTitle>
+        </CardHeader>
+
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {!editando ? (
             <>
-              <Button onClick={() => setEditando(true)}>Atualizar</Button>
-              <Button variant="destructive" onClick={() => setShowExcluirModal(true)}>
-                Excluir
-              </Button>
+              {camposTexto.concat(camposNumericos).map((campo) => (
+                <p key={campo}>
+                  <b>{campo}:</b> {imovel[campo] ?? "campo vazio"}
+                </p>
+              ))}
+
+              {imovel.caracteristicas && (
+                <div className="md:col-span-2">
+                  <h3 className="font-semibold text-lg mt-4">Características</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                    {imovel.caracteristicas
+                      .split(",")
+                      .map((item: string, i: number) => (
+                        <div key={i} className="bg-muted p-2 rounded-lg shadow-sm text-sm">
+                          {item.trim()}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
             </>
           ) : (
             <>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setEditando(false);
-                  carregarImovel();
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button onClick={handleAtualizar} disabled={saving}>
-                {saving ? "Salvando..." : "Salvar"}
-              </Button>
+              {camposTexto.map((campo) => (
+                <Input
+                  key={campo}
+                  name={campo}
+                  value={form[campo] || ""}
+                  onChange={handleChange}
+                  placeholder={campo}
+                />
+              ))}
+
+              {camposNumericos.map((campo) => (
+                <Input
+                  key={campo}
+                  name={campo}
+                  value={form[campo] || ""}
+                  onChange={handleChange}
+                  placeholder={campo}
+                  type="number"
+                />
+              ))}
+
+              <div className="col-span-2">
+                <h3 className="font-semibold mb-2">Características (separe por vírgulas)</h3>
+                <Input
+                  name="caracteristicas"
+                  value={form.caracteristicas || ""}
+                  onChange={handleChange}
+                  placeholder="Ex: Piscina, Garagem, Varanda"
+                />
+              </div>
             </>
           )}
-        </div>
+        </CardContent>
+      </Card>
 
-        <Card className="rounded-xl shadow-lg">
-          <CardHeader>
-            <CardTitle>{imovel.titulo}</CardTitle>
-          </CardHeader>
+      {/* --- Mídia --- */}
+      <Card className="p-6">
+        <CardHeader>
+          <CardTitle>Mídia</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {midias.length === 0 && <p className="text-gray-500">Nenhuma mídia cadastrada.</p>}
 
-          <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {!editando ? (
-              <>
-                <div>
-                  {camposTexto.map((c) => (
-                    <p key={c}>
-                      <b>{c}: </b> {imovel[c] ?? "-"}
-                    </p>
-                  ))}
-                  <p className="mt-4">
-                    <b>Características:</b> {imovel.caracteristicas}
-                  </p>
-                </div>
-
-                <div>
-                  {camposNumericos.map((c) => (
-                    <p key={c}>
-                      <b>{c}: </b> {imovel[c] ?? "-"}
-                    </p>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="space-y-3">
-                  {camposTexto.map((c) => (
-                    <Input
-                      key={c}
-                      name={c}
-                      value={form[c]}
-                      onChange={handleChange}
-                      placeholder={c}
-                    />
-                  ))}
-                </div>
-
-                <div className="space-y-3">
-                  {camposNumericos.map((c) => (
-                    <Input
-                      key={c}
-                      name={c}
-                      value={form[c]}
-                      onChange={handleChange}
-                      type="number"
-                      placeholder={c}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* --- FOTOS --- */}
-        <Card className="mt-6 p-6 shadow-lg">
-          <h2 className="text-xl font-bold mb-4">Fotos</h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {midias.map((m, i) => {
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+            {midias.map((m, index) => {
               const url = m instanceof File ? URL.createObjectURL(m) : m;
               return (
-                <div key={i} className="relative">
-                  <img src={url} className="w-full h-40 object-cover rounded" />
+                <div key={index} className="relative">
+                  {url.endsWith(".mp4") || url.endsWith(".webm") ? (
+                    <video
+                      src={url}
+                      controls
+                      className="rounded-lg shadow-md w-full h-48 object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={url}
+                      alt={`Mídia ${index + 1}`}
+                      className="rounded-lg shadow-md w-full h-48 object-cover"
+                    />
+                  )}
                   {editando && (
-                    <button
-                      onClick={() => handleRemoveMidia(i)}
-                      className="absolute top-2 right-2 bg-white rounded-full p-1"
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="absolute top-2 right-2"
+                      onClick={() => handleRemoveMidia(index)}
                     >
-                      <X size={16} />
-                    </button>
+                      X
+                    </Button>
                   )}
                 </div>
               );
@@ -326,60 +265,48 @@ export default function ImovelDetalhes() {
           </div>
 
           {editando && (
-            <div className="mt-3">
-              <input type="file" multiple onChange={handleAddMidia} />
+            <div className="mt-4">
+              <label className="font-medium mb-2 block">Adicionar novas mídias</label>
+              <input
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                onChange={handleAddMidia}
+                className="border border-gray-300 rounded p-2 w-full"
+              />
             </div>
           )}
-        </Card>
+        </CardContent>
+      </Card>
 
-        {/* --- VIDEOS --- */}
-        <Card className="mt-6 p-6 shadow-lg">
-          <h2 className="text-xl font-bold mb-4">Vídeos</h2>
+      {editando && (
+        <div className="flex justify-end gap-3 mt-4 px-6 pb-4">
+          <Button variant="secondary" onClick={() => setEditando(false)}>
+            Cancelar
+          </Button>
+          <Button onClick={handleAtualizar}>Salvar Alterações</Button>
+        </div>
+      )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {videos.map((v, i) => {
-              const url = v instanceof File ? URL.createObjectURL(v) : v;
-              return (
-                <div key={i} className="relative">
-                  <video src={url} controls className="w-full h-60 object-cover rounded" />
-                  {editando && (
-                    <button
-                      onClick={() => handleRemoveVideo(i)}
-                      className="absolute top-2 right-2 bg-white rounded-full p-1"
-                    >
-                      <X size={16} />
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {editando && (
-            <div className="mt-3">
-              <input type="file" accept="video/*" multiple onChange={handleAddVideo} />
-            </div>
-          )}
-        </Card>
-
-        {/* --- MODAL --- */}
-        <Dialog open={showExcluirModal} onOpenChange={setShowExcluirModal}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Excluir imóvel?</DialogTitle>
-            </DialogHeader>
-            <p className="text-center pt-2">Essa ação é irreversível.</p>
-            <DialogFooter>
-              <Button variant="secondary" onClick={() => setShowExcluirModal(false)}>
-                Cancelar
-              </Button>
-              <Button variant="destructive" onClick={handleExcluir}>
-                Excluir
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </main>
+      {/* --- Modal de exclusão --- */}
+      <Dialog open={showExcluirModal} onOpenChange={setShowExcluirModal}>
+        <DialogContent className="max-w-md text-center space-y-4">
+          <DialogHeader>
+            <DialogTitle>Excluir Imóvel?</DialogTitle>
+          </DialogHeader>
+          <p className="text-gray-600">
+            ⚠️ Se você continuar, <b>esses dados não poderão ser recuperados.</b>
+          </p>
+          <DialogFooter className="flex justify-center gap-4 pt-2">
+            <Button variant="secondary" onClick={() => setShowExcluirModal(false)}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={handleExcluir}>
+              Excluir
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

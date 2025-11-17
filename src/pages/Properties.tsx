@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
-import heroEmpreendimentos from "@/assets/empreendimentos.jpg"; // ALTERADO
+import heroEmpreendimentos from "@/assets/empreendimentos.jpg"; 
 import supabase from "@/utility/supabaseClient";
 
 // Swiper
@@ -32,26 +32,41 @@ const Properties = () => {
       return;
     }
 
-    // Converter coluna 'images'
+    // Converter coluna 'url' (que já é array)
     const parsed = data.map((item) => {
-      let firstImage = "";
+      let urls = [];
 
       try {
-        const fotosArray = JSON.parse(item.images);
-        firstImage = fotosArray[0]?.url || "";
-      } catch (e) {
-        console.warn("Erro ao converter fotos:", e);
+        // Caso a coluna venha como objeto
+        if (typeof item.url === "object" && item.url !== null) {
+          urls = Object.values(item.url);
+        }
+
+        // Caso venha como string JSON
+        else if (typeof item.url === "string") {
+          const parsed = JSON.parse(item.url);
+          urls = Array.isArray(parsed) ? parsed : Object.values(parsed);
+        }
+      } catch {
+        urls = [];
       }
+
+      const firstImage = urls[0] || "";
+      
+      
 
       return {
         id: item.id,
         title: item.titulo,
         location: item.bairro,
         type: item.tipo,
-        image: firstImage,
+        image: firstImage,   // primeira URL ✔
         categories: [item.tipo],
       };
     });
+  
+
+
 
     setProperties(parsed);
     setLoading(false);
