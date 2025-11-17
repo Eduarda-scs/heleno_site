@@ -267,40 +267,7 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
                     </div>
                   </div>
 
-                  {/* Condomínio */}
-                  <div className="col-span-12 lg:col-span-6">
-                    <h4 className="text-sm font-semibold text-blue-100 mb-2">Condomínio</h4>
-
-                    <div className="flex gap-2 mb-3">
-                      <Input
-                        value={novoCondominio}
-                        onChange={(e) => setNovoCondominio(e.target.value)}
-                        placeholder="Nova opção"
-                      />
-                      <Button onClick={adicionarCondominio} className="bg-blue-600 text-white">
-                        <Plus size={16} />
-                      </Button>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {condominioBanco.map((c, i) => (
-                        <label
-                          key={i}
-                          className={`flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer ${
-                            condominioSelecionado.includes(c)
-                              ? "bg-blue-600 text-white"
-                              : "bg-blue-900/30 text-blue-100"
-                          }`}
-                          onClick={() =>
-                            toggleItem(c, condominioSelecionado, setCondominioSelecionado)
-                          }
-                        >
-                          <input type="checkbox" checked={condominioSelecionado.includes(c)} readOnly />
-                          {c}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+                  
 
                 </div>
               </div>
