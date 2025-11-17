@@ -19,6 +19,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import {deletarImoveis} from "@/components/supabaseActions";
 
 export default function CadastroImoveis() {
   const [imoveis, setImoveis] = useState<any[]>([]);
@@ -51,7 +52,7 @@ export default function CadastroImoveis() {
   };
 
   const confirmarExclusao = async () => {
-    await supabase.from("HA_IMOVEIS").delete().in("id", selecionados);
+    await deletarImoveis(selecionados);
     setSelecionados([]);
     carregarImoveis();
     setConfirmDelete(false);

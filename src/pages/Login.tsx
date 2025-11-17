@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import supabase from "@/utility/supabaseClient";
 import { useAuth } from "../authProvider";
 import { Header } from "@/components/Header";
 import logo from "@/assets/logo.png";
+import { getHAUser } from "@/components/supabaseActions";
 
 import {
   Eye,
@@ -43,14 +43,10 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase
-        .from("HA_user")
-        .select("*")
-        .eq("email", form.email)
-        .eq("senha", form.password)
-        .single();
+      const data = await getHAUser(form.email, form.password);
 
-      if (error || !data) {
+      // Se não encontrou usuário → erro de login
+      if (!data) {
         toast({
           title: "Erro no login",
           description: "E-mail ou senha incorretos.",
@@ -59,9 +55,14 @@ export default function Login() {
         return;
       }
 
+      // Salvar no localStorage
       localStorage.setItem(
         "ha_user",
-        JSON.stringify({ id: data.id, nome: data.name, tipo: data.tipo })
+        JSON.stringify({
+          id: data.id,
+          nome: data.name,
+          tipo: data.tipo,
+        })
       );
 
       setUser(data);
@@ -72,12 +73,14 @@ export default function Login() {
       });
 
       setTimeout(() => navigate("/"), 1200);
+
     } catch (err: any) {
       toast({
         title: "Erro inesperado",
         description: err.message || "Tente novamente mais tarde.",
         variant: "destructive",
       });
+
     } finally {
       setLoading(false);
     }

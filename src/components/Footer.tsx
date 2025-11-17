@@ -12,7 +12,9 @@ export const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 lg:px-8 py-12">
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          
           {/* Sobre */}
           <div>
             <h3 className="text-2xl font-bold mb-4">
@@ -24,7 +26,6 @@ export const Footer = () => {
               personalizado.
             </p>
           </div>
-
 
           {/* Contato */}
           <div>
@@ -73,6 +74,43 @@ export const Footer = () => {
               })}
             </div>
           </div>
+
+          {/* NOVA COLUNA: Links úteis */}
+          <div>
+            <h4 className="text-lg font-semibold mb-4 text-secondary">
+              Links Úteis
+            </h4>
+
+            <ul className="space-y-3 text-sm text-primary-foreground/80">
+              <li>
+                <Link
+                  to="/politicacokies"
+                  className="hover:text-secondary transition-colors"
+                >
+                  Política de Cookies
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/politicaprivacidade"
+                  className="hover:text-secondary transition-colors"
+                >
+                  Política de Privacidade
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/termodeuso"
+                  className="hover:text-secondary transition-colors"
+                >
+                  Termos de Uso
+                </Link>
+              </li>
+            </ul>
+          </div>
+
         </div>
 
         {/* Copyright */}

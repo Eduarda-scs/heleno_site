@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { X, Plus } from "lucide-react";
 import supabase from "@/utility/supabaseClient";
 import { createImovel } from "@/components/ImageEvents";
+import {getCaracteristicas} from "@/components/supabaseActions";
 
 export default function ModalCadastroImovel({ open, onClose, onSave }) {
   const [step, setStep] = useState(1);
@@ -70,10 +71,7 @@ export default function ModalCadastroImovel({ open, onClose, onSave }) {
     if (!open) return;
 
     async function loadData() {
-      const { data } = await supabase
-        .from("caract_heleno")
-        .select("*")
-        .order("id");
+      const { data } = await getCaracteristicas();
 
       if (data) {
         setCaracteristicasBanco(

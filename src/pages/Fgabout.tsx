@@ -18,8 +18,9 @@ import fgHero from "@/assets/fg-hero1.png";
 import fgTimeline from "@/assets/fg-timeline.jpg";
 import fgLuxury from "@/assets/fg-luxury.jpg";
 import fgInnovation from "@/assets/fg-innovation.jpg";
+import { getEmpresasHeleno } from "@/components/supabaseActions";
 
-import supabase from "@/utility/supabaseClient";
+
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -39,14 +40,9 @@ export default function AboutFG() {
 
   useEffect(() => {
     async function load() {
-      const { data, error } = await supabase
-        .from("empresas_heleno")
-        .select("*")
-        .order("id", { ascending: true });
-
-      if (!error && data) setEmpresas(data);
+      const data = await getEmpresasHeleno();
+      setEmpresas(data);
     }
-
     load();
   }, []);
 

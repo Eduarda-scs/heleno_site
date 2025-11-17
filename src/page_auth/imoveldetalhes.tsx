@@ -14,7 +14,9 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { X } from "lucide-react";
-
+import {getImovelById} from "@/components/supabaseActions";
+import {deletebyid} from "@/components/supabaseActions";
+ 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL;
 
 export default function ImovelDetalhes() {
@@ -31,11 +33,7 @@ export default function ImovelDetalhes() {
 
   // --- CARREGAR DO SUPABASE ---
   async function carregarImovel() {
-    const { data, error } = await supabase
-      .from("heleno_imoveis")
-      .select("*")
-      .eq("id", id)
-      .single();
+    const { data, error } = await getImovelById(id);
 
     if (!error && data) {
       setImovel(data);
@@ -114,10 +112,7 @@ export default function ImovelDetalhes() {
 
   // --- EXCLUIR ---
   const handleExcluir = async () => {
-    const { error } = await supabase
-      .from("heleno_imoveis")
-      .delete()
-      .eq("id", id);
+    const { error } = await deletebyid (id);
 
     if (!error) {
       setShowExcluirModal(false);

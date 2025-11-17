@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import heroBalneario from "@/assets/hero-balneario.jpg";
-import supabase from "@/utility/supabaseClient"; // ← IMPORTANTE
+import { createContato } from "@/components/supabaseActions"; // ← IMPORTANTE
 
 const contactInfo = [
   {
@@ -63,7 +63,7 @@ const Contact = () => {
     }
 
     // Enviar para o Supabase
-    const { error } = await supabase.from("heleno_contato").insert({
+    const { error } = await createContato({
       nome: formData.name,
       email: formData.email,
       telefone: formData.phone,

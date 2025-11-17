@@ -15,7 +15,10 @@ import Login from "./pages/Login";
 import Dashboard from "./page_auth/dashboard";
 import ImovelDetalhes from "./page_auth/imoveldetalhes";
 import CadastroImoveis from "./page_auth/cadastroimovel";
-
+import CookieConsent from "@/components/CookieConsent";
+import PoliticasCookies from "./pages/PoliticasCookies";
+import PoliticasPrivacidade from "./pages/politicaprivacidade";
+import TermosUso from "./pages/termodeuso";
  
 import { AuthProvider, useAuth } from "./authProvider";
 
@@ -50,6 +53,9 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/empreendimentos" element={<Properties />} />
               <Route path="empreendimento/:id" element={<PropertyDetails />} />
+              <Route path="/politicacokies" element={<PoliticasCookies />} />
+              <Route path="/politicaprivacidade" element={<PoliticasPrivacidade />} />
+              <Route path="/termodeuso" element={<TermosUso />} />
 
               {/* EXEMPLO DE ROTA PRIVADA */}
               <Route
@@ -92,6 +98,7 @@ const App = () => {
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <CookieConsent />
           </BrowserRouter>
         </AuthProvider>
       </TooltipProvider>
