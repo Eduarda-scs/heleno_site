@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   Award,
   Building2,
@@ -18,70 +19,89 @@ import fgTimeline from "@/assets/fg-timeline.jpg";
 import fgLuxury from "@/assets/fg-luxury.jpg";
 import fgInnovation from "@/assets/fg-innovation.jpg";
 
-// Estatísticas da FG
-const fgStats = [
-  { icon: Building2, label: "Empreendimentos Entregues", value: "63+" },
-  { icon: Award, label: "Anos de História", value: "20+" },
-  { icon: Flag, label: "Investimentos Planejados", value: "R$ 750 mi+" },
-  { icon: TrendingUp, label: "Crescimento", value: "Histórico" },
-];
+import supabase from "@/utility/supabaseClient";
 
-// Pilares da FG
-const pillars = [
-  {
-    icon: ShieldCheck,
-    title: "Excelência Construtiva",
-    description:
-      "Projetos de elevado padrão, com materiais premium, engenharia sofisticada e atenção aos detalhes.",
-  },
-  {
-    icon: Diamond,
-    title: "Sofisticação & Luxo",
-    description:
-      "Desenvolvimentos projetados para oferecer experiências residenciais de alto luxo e exclusividade.",
-  },
-  {
-    icon: Sparkles,
-    title: "Inovação",
-    description:
-      "Adoção de tecnologia, automação e soluções sustentáveis para tornar cada empreendimento moderno e eficiente.",
-  },
-  {
-    icon: Library,
-    title: "Tradição & Credibilidade",
-    description:
-      "Mais de 40 anos de legado, sólida governança corporativa e reputação consolidada no mercado.",
-  },
-];
+// Swiper
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
-const AboutFG = () => {
+interface Empresa {
+  id: number;
+  nome: string;
+  describ: string;
+  pdf: string;
+  foto: string;
+  carrossel: number;
+}
+
+export default function AboutFG() {
+  const [empresas, setEmpresas] = useState<Empresa[]>([]);
+
+  useEffect(() => {
+    async function load() {
+      const { data, error } = await supabase
+        .from("empresas_heleno")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (!error && data) setEmpresas(data);
+    }
+
+    load();
+  }, []);
+
+  // Estatísticas da FG
+  const fgStats = [
+    { icon: Building2, label: "Empreendimentos Entregues", value: "63+" },
+    { icon: Award, label: "Anos de História", value: "20+" },
+    { icon: Flag, label: "Investimentos Planejados", value: "R$ 750 mi+" },
+    { icon: TrendingUp, label: "Crescimento", value: "Histórico" },
+  ];
+
+  // Pilares
+  const pillars = [
+    {
+      icon: ShieldCheck,
+      title: "Excelência Construtiva",
+      description:
+        "Projetos com materiais premium, engenharia sofisticada e atenção aos detalhes.",
+    },
+    {
+      icon: Diamond,
+      title: "Sofisticação & Luxo",
+      description:
+        "Empreendimentos de alto padrão focados em exclusividade e experiências superiores.",
+    },
+    {
+      icon: Sparkles,
+      title: "Inovação",
+      description:
+        "Tecnologia, automação e sustentabilidade em cada projeto.",
+    },
+    {
+      icon: Library,
+      title: "Tradição & Credibilidade",
+      description:
+        "Mais de 40 anos de legado e reputação consolidada no mercado.",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative h-[50vh] sm:h-[80vh] flex items-center justify-center overflow-hidden">
-
-        <div
-          className="
-            absolute inset-0 
-            bg-contain bg-top sm:bg-cover 
-            bg-no-repeat
-          "
-          style={{ backgroundImage: `url(${fgHero})` }}
+      {/* HERO LIMPO E NÍTIDO */}
+      <section className="w-full relative">
+        <img
+          src={fgHero}
+          alt="FG Hero"
+          className="w-full h-auto object-cover"
         />
-
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/60 to-primary/80" />
-
-        
-        
-
       </section>
 
-
       {/* Estatísticas */}
-      <section className="py-12 sm:py-16 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 lg:px-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+      <section className="py-10 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 lg:px-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {fgStats.map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -90,9 +110,9 @@ const AboutFG = () => {
                 className="text-center animate-fade-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Icon className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 sm:mb-3 text-secondary" />
-                <div className="text-2xl sm:text-3xl font-bold mb-1">{stat.value}</div>
-                <div className="text-xs sm:text-sm text-primary-foreground/80">
+                <Icon className="w-8 h-8 mx-auto mb-2 text-secondary" />
+                <div className="text-xl font-bold">{stat.value}</div>
+                <div className="text-sm text-primary-foreground/80">
                   {stat.label}
                 </div>
               </div>
@@ -101,69 +121,64 @@ const AboutFG = () => {
         </div>
       </section>
 
-      {/* Sobre a FG */}
-      <section className="py-16 sm:py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
+      {/* SOBRE */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
           <div className="animate-fade-up">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Um marco na construção de Balneário Camboriú
             </h2>
-            <p className="text-muted-foreground leading-relaxed mb-4 text-base sm:text-lg">
-              Com mais de 40 anos de atuação, a FG Empreendimentos é uma das principais incorporadoras de alto padrão do Brasil.
+
+            <p className="text-muted-foreground mb-4 text-lg">
+              Com mais de 40 anos de atuação, a FG é uma das principais incorporadoras de alto padrão do Brasil.
             </p>
-            <p className="text-muted-foreground leading-relaxed mb-4 text-base sm:text-lg">
-              Em 2021, a empresa completou 20 anos de história, consolidando seu portfólio com empreendimentos icônicos.
+
+            <p className="text-muted-foreground mb-4 text-lg">
+              Em 2021 completou 20 anos como uma gigante em inovação e arquitetura.
             </p>
-            <p className="text-muted-foreground leading-relaxed mb-6 text-base sm:text-lg">
-              Recentemente, a FG anunciou investimentos superiores a R$ 750 milhões para ampliar sua operação em Balneário Camboriú.
+
+            <p className="text-muted-foreground mb-6 text-lg">
+              Anunciou investimentos superiores a R$ 750 milhões para expansão em BC.
             </p>
+
             <Button variant="gold" size="lg" asChild>
               <Link to="/empreendimentos">Ver Portfólio</Link>
             </Button>
           </div>
 
-          <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-medium)] animate-fade-up">
-            <img
-              src={fgTimeline}
-              alt="Linha do tempo FG"
-              className="w-full h-[400px] sm:h-[500px] md:h-[600px] object-cover"
-            />
+          <div className="rounded-2xl overflow-hidden shadow-xl animate-fade-up">
+            <img src={fgTimeline} className="w-full object-cover" />
           </div>
         </div>
       </section>
 
       {/* Pilares */}
-      <section className="py-16 sm:py-20 bg-luxury-bg">
+      <section className="py-20 bg-luxury-bg">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16 animate-fade-up">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Pilares da FG
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Valores que definem cada empreendimento da empresa
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold">Pilares da FG</h2>
+            <p className="text-muted-foreground mt-2 text-lg">
+              Valores que definem a empresa
             </p>
           </div>
 
-          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {pillars.map((pillar, index) => {
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {pillars.map((pillar, i) => {
               const Icon = pillar.icon;
               return (
                 <div
-                  key={index}
-                  className="p-6 bg-card rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-gold)] transition-all duration-300 hover:-translate-y-1 animate-fade-up"
-                  style={{ animationDelay: `${index * 120}ms` }}
+                  key={i}
+                  className="p-6 bg-card rounded-xl shadow-lg hover:shadow-[var(--shadow-gold)] transition-all animate-fade-up"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+                    <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
                       <Icon className="w-6 h-6 text-secondary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">
+                      <h3 className="font-semibold text-lg mb-1">
                         {pillar.title}
                       </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        {pillar.description}
-                      </p>
+                      <p className="text-muted-foreground">{pillar.description}</p>
                     </div>
                   </div>
                 </div>
@@ -174,77 +189,122 @@ const AboutFG = () => {
       </section>
 
       {/* Luxo */}
-      <section className="py-16 sm:py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
-          <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-medium)] animate-fade-up">
-            <img
-              src={fgLuxury}
-              alt="Luxo FG"
-              className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover"
-            />
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+          <div className="rounded-2xl overflow-hidden shadow-xl">
+            <img src={fgLuxury} className="w-full object-cover" />
           </div>
 
-          <div className="animate-fade-up">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Luxo que Define um Novo Padrão
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Luxo que redefine padrões
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-              Os empreendimentos da FG são planejados para um público que busca elegância, conforto e exclusividade.
+            <p className="text-muted-foreground text-lg mb-4">
+              Projetos planejados para um público que busca exclusividade e sofisticação.
             </p>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              Cada projeto é concebido para se tornar um ícone arquitetônico, com design sofisticado e alto valor agregado.
+            <p className="text-muted-foreground text-lg">
+              Arquitetura icônica e valorização garantida.
             </p>
           </div>
         </div>
       </section>
 
       {/* Inovação */}
-      <section className="py-16 sm:py-20 bg-luxury-bg">
-        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
-          <div className="animate-fade-up">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
+      <section className="py-20 bg-luxury-bg">
+        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Tecnologia & <span className="text-secondary">Inovação</span>
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-              A FG aposta em automação, sistemas inteligentes e métodos construtivos sustentáveis para trazer valor real aos moradores.
+            <p className="text-muted-foreground text-lg mb-4">
+              Automação, segurança, eficiência e sustentabilidade.
             </p>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              Projetos são desenvolvidos com foco em segurança, eficiência energética e conforto, sempre com visão de futuro.
+            <p className="text-muted-foreground text-lg mb-6">
+              Projetos pensados para o futuro.
             </p>
+
             <Button variant="hero" size="lg" asChild>
               <Link to="/empreendimentos">Ver Empreendimentos</Link>
             </Button>
           </div>
 
-          <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-medium)] animate-fade-up">
-            <img
-              src={fgInnovation}
-              alt="Inovação FG"
-              className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover"
-            />
+          <div className="rounded-2xl overflow-hidden shadow-xl">
+            <img src={fgInnovation} className="w-full object-cover" />
           </div>
         </div>
       </section>
 
-      {/* Informações Corporativas */}
-      <section className="py-16 sm:py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8 space-y-6 sm:space-y-10">
-          <div className="animate-fade-up">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
-              Institucional e Impacto
-            </h2>
-            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-              A FG integra a FG Brazil Holding, que reúne empresas nos setores de construção civil, hotelaria, arquitetura e serviços.
-            </p>
-            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-              A empresa se destaca por governança robusta, estratégia de longo prazo e compromisso social e ambiental.
-            </p>
-            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-              A FG possui mais de 2 milhões de m² de potencial construtivo em Balneário Camboriú.
-            </p>
-            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-              O grupo projeta crescimento financeiro sólido e mantém margens operacionais expressivas.
-            </p>
+      {/* Empresas parceiras */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
+            Empresas Parceiras
+          </h2>
+
+          {/* Mobile Carrossel */}
+          <div className="md:hidden">
+            <Swiper slidesPerView={1.1} spaceBetween={20} className="pb-10">
+              {empresas.map((empresa) => (
+                <SwiperSlide key={empresa.id}>
+                  <div className="rounded-2xl overflow-hidden relative bg-black text-white shadow-xl">
+                    <img
+                      src={empresa.foto}
+                      className="w-full h-72 object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+
+                    <div className="absolute bottom-0 p-5">
+                      <p className="text-green-400 text-sm">Parceiro oficial</p>
+                      <h3 className="text-xl font-bold">{empresa.nome}</h3>
+                      <p className="text-white/80 text-sm line-clamp-3">
+                        {empresa.describ}
+                      </p>
+
+                      {empresa.pdf && (
+                        <a href={empresa.pdf} target="_blank">
+                          <Button className="mt-3 bg-green-600 hover:bg-green-700 rounded-full px-4 py-2 text-sm">
+                            Baixar PDF
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+
+          {/* Desktop grid */}
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8">
+            {empresas.map((empresa) => (
+              <div
+                key={empresa.id}
+                className="rounded-2xl overflow-hidden relative bg-black text-white shadow-xl hover:scale-[1.02] transition"
+              >
+                <img
+                  src={empresa.foto}
+                  className="w-full h-72 object-cover"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+
+                <div className="absolute bottom-0 p-5">
+                  <p className="text-green-400 text-sm">Parceiro oficial</p>
+                  <h3 className="text-xl font-bold">{empresa.nome}</h3>
+                  <p className="text-white/80 text-sm line-clamp-3">
+                    {empresa.describ}
+                  </p>
+
+                  {empresa.pdf && (
+                    <a href={empresa.pdf} target="_blank">
+                      <Button className="mt-3 bg-green-600 hover:bg-green-700 rounded-full px-4 py-2 text-sm">
+                        Baixar PDF
+                      </Button>
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -252,6 +312,4 @@ const AboutFG = () => {
       <Footer />
     </div>
   );
-};
-
-export default AboutFG;
+}

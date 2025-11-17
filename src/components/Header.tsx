@@ -11,7 +11,6 @@ const navigation = [
   { name: "A Cidade", href: "/cidade" },
   { name: "Empreendimentos", href: "/empreendimentos" },
   { name: "FG Empreendimentos", href: "/fgabout" },
-  { name: "Empresas Parceiras", href: "/EmpresasParceiras" },
   { name: "Sobre", href: "/sobre" },
   { name: "Contato", href: "/contato" },
 ];

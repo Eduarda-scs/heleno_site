@@ -167,7 +167,7 @@ export default function ModalCadastroImovel({
           </div>
 
           {/* BODY */}
-          <div className="flex-1 overflow-auto p-6 text-blue-50">
+          <div className="flex-1 overflow-auto p-6 text-black-200">
             {step === 1 ? (
               <div className="space-y-6">
                 <div className="grid grid-cols-12 gap-4">
