@@ -15,7 +15,7 @@ import Login from "./pages/Login";
 import Dashboard from "./page_auth/dashboard";
 import ImovelDetalhes from "./page_auth/imoveldetalhes";
 import CadastroImoveis from "./page_auth/cadastroimovel";
-import EmpresasParceiras from "./pages/Empresasparceiras";
+
  
 import { AuthProvider, useAuth } from "./authProvider";
 
@@ -49,7 +49,6 @@ const App = () => {
               <Route path="/contato" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route path="/empreendimentos" element={<Properties />} />
-              <Route path="EmpresasParceiras" element={<EmpresasParceiras />} />
               <Route path="empreendimento/:id" element={<PropertyDetails />} />
 
               {/* EXEMPLO DE ROTA PRIVADA */}
