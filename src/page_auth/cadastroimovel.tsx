@@ -17,8 +17,8 @@ import { PlusCircle, Trash2, Eye, XCircle } from "lucide-react";
 import ModalCadastroImovel from "@/components/ModalCadastroImovel";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-import {Header} from "@/components/Header";
-import {Footer} from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export default function CadastroImoveis() {
   const [imoveis, setImoveis] = useState<any[]>([]);
@@ -65,23 +65,23 @@ export default function CadastroImoveis() {
   );
 
   return (
-    <>
-      {/* 🔹 HEADER */}
+    <div className="min-h-screen w-full bg-zinc-700 text-zinc-100">
+      {/* HEADER */}
       <Header />
 
-      {/* 🔹 CONTEÚDO PRINCIPAL */}
+      {/* CONTEÚDO PRINCIPAL */}
       <div className="container mx-auto px-4 py-10 lg:py-16 animate-fade-in">
         <div className="text-center mb-10">
           <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
-            <span className="text-primary-foreground">Cadastro de</span>{" "}
-            <span className="text-secondary">Imóveis</span>
+            <span className="text-zinc-100">Cadastro de</span>{" "}
+            <span className="text-emerald-400">Imóveis</span>
           </h1>
-          <p className="text-muted-foreground mt-2 text-sm lg:text-base">
+          <p className="text-zinc-200 mt-2 text-sm lg:text-base">
             Gerencie anúncios, valores, disponibilidade e detalhes dos imóveis.
           </p>
         </div>
 
-        {/* 🔹 TOPO */}
+        {/* TOPO */}
         <div
           className={`flex ${
             isMobile ? "flex-col gap-3" : "justify-between items-center"
@@ -91,7 +91,7 @@ export default function CadastroImoveis() {
             placeholder="Buscar imóvel..."
             className={`${
               isMobile ? "w-full" : "w-72"
-            } bg-muted/40 backdrop-blur-sm`}
+            } bg-zinc-200 text-black border border-zinc-400 placeholder-zinc-600`}
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
           />
@@ -103,8 +103,9 @@ export default function CadastroImoveis() {
           >
             <Button
               onClick={() => setShowModal(true)}
-              variant="gold"
-              className={isMobile ? "w-full" : ""}
+              className={`bg-emerald-500 hover:bg-emerald-600 ${
+                isMobile && "w-full"
+              }`}
             >
               <PlusCircle className="mr-2 h-5 w-5" /> Novo Imóvel
             </Button>
@@ -122,19 +123,19 @@ export default function CadastroImoveis() {
           </div>
         </div>
 
-        {/* 🔹 TABELA DESKTOP */}
+        {/* TABELA DESKTOP */}
         {!isMobile && (
-          <div className="rounded-xl border bg-card shadow-lg overflow-hidden">
+          <div className="w-full bg-zinc-600 text-zinc-100 rounded-lg shadow border border-zinc-500">
             <Table>
-              <TableHeader className="bg-muted/50">
+              <TableHeader className="bg-zinc-500 border-b border-zinc-400">
                 <TableRow>
-                  <TableHead className="w-12 text-center">Sel.</TableHead>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Título</TableHead>
-                  <TableHead>Negociação</TableHead>
-                  <TableHead>Valor</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-center">Ações</TableHead>
+                  <TableHead className="w-12 text-center text-black">Sel.</TableHead>
+                  <TableHead className=" text-black">ID</TableHead>
+                  <TableHead className=" text-black">Título</TableHead>
+                  <TableHead className=" text-black">Negociação</TableHead>
+                  <TableHead className=" text-black">Valor</TableHead>
+                  <TableHead className=" text-black">Status</TableHead>
+                  <TableHead className="text-center text-black">Ações</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -143,9 +144,9 @@ export default function CadastroImoveis() {
                   imoveisFiltrados.map((imovel) => (
                     <TableRow
                       key={imovel.id}
-                      className={`hover:bg-muted/40 transition ${
+                      className={`hover:bg-zinc-500/40 transition ${
                         selecionados.includes(imovel.id)
-                          ? "bg-muted/60"
+                          ? "bg-zinc-500/60"
                           : ""
                       }`}
                     >
@@ -154,7 +155,7 @@ export default function CadastroImoveis() {
                           type="checkbox"
                           checked={selecionados.includes(imovel.id)}
                           onChange={() => handleSelect(imovel.id)}
-                          className="accent-secondary h-4 w-4"
+                          className="accent-emerald-500 h-4 w-4"
                         />
                       </TableCell>
 
@@ -165,7 +166,7 @@ export default function CadastroImoveis() {
                       <TableCell className="capitalize">
                         {imovel.negociacao}
                       </TableCell>
-                      <TableCell className="font-medium text-green-600">
+                      <TableCell className="font-medium text-emerald-300">
                         {imovel.valor
                           ? `R$ ${Number(imovel.valor).toLocaleString(
                               "pt-BR",
@@ -178,8 +179,8 @@ export default function CadastroImoveis() {
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-semibold ${
                             imovel.status
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
+                              ? "bg-emerald-800/30 text-emerald-200"
+                              : "bg-red-800/30 text-red-200"
                           }`}
                         >
                           {imovel.status ? "Disponível" : "Vendido"}
@@ -190,6 +191,7 @@ export default function CadastroImoveis() {
                         <Button
                           variant="outline"
                           size="sm"
+                          className="border-zinc-400 text-black"
                           onClick={() => handleAbrirDetalhes(imovel.id)}
                         >
                           <Eye className="h-4 w-4 mr-1" /> Ver
@@ -201,7 +203,7 @@ export default function CadastroImoveis() {
                   <TableRow>
                     <TableCell
                       colSpan={7}
-                      className="text-center py-6 text-muted-foreground"
+                      className="text-center py-6 text-zinc-300"
                     >
                       Nenhum imóvel encontrado.
                     </TableCell>
@@ -212,36 +214,38 @@ export default function CadastroImoveis() {
           </div>
         )}
 
-        {/* 🔹 MOBILE — CARDS */}
+        {/* MOBILE — CARDS */}
         {isMobile && (
           <div className="space-y-4">
             {imoveisFiltrados.length > 0 ? (
               imoveisFiltrados.map((imovel) => (
                 <div
                   key={imovel.id}
-                  className={`border rounded-xl p-4 shadow-md bg-card ${
+                  className={`border rounded-xl p-4 shadow-md bg-zinc-600 border-zinc-400 ${
                     selecionados.includes(imovel.id)
-                      ? "border-secondary"
-                      : "border-border"
+                      ? "border-emerald-400"
+                      : "border-zinc-400"
                   }`}
                 >
                   <div className="flex justify-between items-center mb-2">
-                    <h2 className="font-semibold text-lg">
+                    <h2 className="font-semibold text-lg text-zinc-100">
                       {imovel.titulo}
                     </h2>
                     <input
                       type="checkbox"
                       checked={selecionados.includes(imovel.id)}
                       onChange={() => handleSelect(imovel.id)}
-                      className="accent-secondary"
+                      className="accent-emerald-400"
                     />
                   </div>
 
                   <p>
-                    <strong>Negociação:</strong> {imovel.negociacao}
+                    <strong className="text-zinc-200">Negociação:</strong>{" "}
+                    {imovel.negociacao}
                   </p>
+
                   <p>
-                    <strong>Valor:</strong>{" "}
+                    <strong className="text-zinc-200">Valor:</strong>{" "}
                     {imovel.valor
                       ? `R$ ${Number(imovel.valor).toLocaleString("pt-BR", {
                           minimumFractionDigits: 2,
@@ -250,12 +254,12 @@ export default function CadastroImoveis() {
                   </p>
 
                   <p>
-                    <strong>Status:</strong>{" "}
+                    <strong className="text-zinc-200">Status:</strong>{" "}
                     <span
                       className={`font-semibold ${
                         imovel.status
-                          ? "text-green-600"
-                          : "text-red-600"
+                          ? "text-emerald-300"
+                          : "text-red-300"
                       }`}
                     >
                       {imovel.status ? "Disponível" : "Vendido"}
@@ -265,7 +269,7 @@ export default function CadastroImoveis() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full mt-3"
+                    className="w-full mt-3 border-zinc-400 text-zinc-100"
                     onClick={() => handleAbrirDetalhes(imovel.id)}
                   >
                     <Eye className="h-4 w-4 mr-1" /> Ver detalhes
@@ -273,37 +277,38 @@ export default function CadastroImoveis() {
                 </div>
               ))
             ) : (
-              <p className="text-center text-muted-foreground">
+              <p className="text-center text-zinc-200">
                 Nenhum imóvel encontrado.
               </p>
             )}
           </div>
         )}
 
-        {/* 🔹 Modal de Cadastro */}
+        {/* Modal de Cadastro */}
         <ModalCadastroImovel
           open={showModal}
           onClose={() => setShowModal(false)}
           onSave={carregarImoveis}
         />
 
-        {/* 🔹 Modal de Confirmação */}
+        {/* Modal de Confirmação */}
         {confirmDelete && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-md text-center">
-              <XCircle className="text-red-500 w-12 h-12 mx-auto mb-3" />
+            <div className="bg-zinc-600 border border-zinc-400 text-zinc-100 rounded-2xl shadow-xl p-6 w-[90%] max-w-md text-center">
+              <XCircle className="text-red-400 w-12 h-12 mx-auto mb-3" />
 
               <h2 className="text-xl font-semibold mb-2">
                 Confirmar exclusão
               </h2>
 
-              <p className="text-muted-foreground mb-6">
+              <p className="text-zinc-200 mb-6">
                 Tem certeza que deseja excluir os imóveis selecionados?
               </p>
 
               <div className="flex justify-center gap-3">
                 <Button
                   variant="outline"
+                  className="border-zinc-400 text-zinc-100"
                   onClick={() => setConfirmDelete(false)}
                 >
                   Cancelar
@@ -318,8 +323,8 @@ export default function CadastroImoveis() {
         )}
       </div>
 
-      {/* 🔹 FOOTER */}
+      {/* FOOTER */}
       <Footer />
-    </>
+    </div>
   );
 }
