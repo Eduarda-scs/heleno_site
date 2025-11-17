@@ -234,7 +234,7 @@ export default function AboutFG() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
-            Empresas Parceiras
+            Detalhes de cada empreendimento
           </h2>
 
           {/* Mobile Carrossel */}
