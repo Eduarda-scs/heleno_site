@@ -84,15 +84,19 @@ export default function ImovelDetalhes() {
       }
 
       let vids: string[] = [];
-      try {
-        if (data.videos) {
-          if (typeof data.videos === "string") {
-            vids = JSON.parse(data.videos).map((i: any) => i.url);
-          } else if (Array.isArray(data.videos)) {
-            vids = data.videos.map((i: any) => i.url || i);
+        try {
+          if (data.videos) {
+            if (typeof data.videos === "string") {
+              vids = JSON.parse(data.videos);
+            } else if (Array.isArray(data.videos)) {
+              vids = data.videos;
+            }
           }
+        } catch {
+          vids = [];
         }
-      } catch {}
+        setVideos(vids);
+
 
       setMidias(urls);
       setVideos(vids);
@@ -167,7 +171,7 @@ export default function ImovelDetalhes() {
     setSaving(false);
   };
 
-  // --- 🔥 CORRIGIDO: TIPO EXPLÍCITO EM MIDIAS ---
+  // CORRIGIDO: TIPO EXPLÍCITO EM MIDIAS
   const handleAddMidia = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files) as File[];
@@ -175,7 +179,7 @@ export default function ImovelDetalhes() {
     }
   };
 
-  // --- 🔥 CORRIGIDO: TIPO EXPLÍCITO EM VIDEOS ---
+  // CORRIGIDO: TIPO EXPLÍCITO EM VIDEOS 
   const handleAddVideo = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files) as File[];
