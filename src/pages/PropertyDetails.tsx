@@ -11,7 +11,7 @@ import {
   MapPin,
   CheckCircle,
   MessageCircle,
-  Play,
+  X,
 } from "lucide-react";
 import supabase from "@/utility/supabaseClient";
 
@@ -20,7 +20,10 @@ const PropertyDetails = () => {
   const [property, setProperty] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Buscar imóvel pelo ID
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  // BUSCAR IMÓVEL
   const fetchProperty = async () => {
     setLoading(true);
 
@@ -36,27 +39,28 @@ const PropertyDetails = () => {
       return;
     }
 
-    // Converter fotos (JSON string → array)
-    let fotosArray = [];
+    let fotosArray: any[] = [];
     if (data.images) {
       try {
-        fotosArray = JSON.parse(data.images); // [{url, public_id}]
-      } catch (e) {
-        console.warn("Erro ao converter fotos:", e);
-      }
+        const parsed = JSON.parse(data.images);
+        fotosArray = parsed.map((item: any) => ({
+          type: "image",
+          url: item.url,
+        }));
+      } catch {}
     }
 
-    // Converter videos
-    let videosArray = [];
+    let videosArray: any[] = [];
     if (data.videos) {
       try {
-        videosArray = JSON.parse(data.videos);
-      } catch (e) {
-        console.warn("Erro ao converter vídeos:", e);
-      }
+        const parsed = JSON.parse(data.videos);
+        videosArray = parsed.map((url: string) => ({
+          type: "video",
+          url,
+        }));
+      } catch {}
     }
 
-    // Converter características (string separada por vírgula)
     let caracteristicasArray = [];
     if (data.caracteristicas) {
       caracteristicasArray = data.caracteristicas
@@ -86,76 +90,103 @@ const PropertyDetails = () => {
     );
   }
 
-  // HERO IMAGE = primeira foto
+  // ORGANIZAÇÃO
   const heroImage = property.fotos[0]?.url || "";
 
-  // Galeria combinando fotos + vídeos
+  // 🔥 AGORA a galeria inclui o hero como item 0 também
   const gallery = [
-    ...property.fotos.slice(1).map((f: any) => ({ type: "image", url: f.url })),
-    ...property.videos.map((v: any) => ({ type: "video", url: v.url })),
+    ...(heroImage ? [{ type: "image", url: heroImage }] : []),
+    ...property.fotos.slice(1),
+    ...property.videos,
   ];
 
   const visibleGallery = gallery.slice(0, 4);
   const extraMedia = gallery.length - 4;
 
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const nextMedia = () => {
+    setLightboxIndex((prev) =>
+      prev + 1 < gallery.length ? prev + 1 : 0
+    );
+  };
+
+  const prevMedia = () => {
+    setLightboxIndex((prev) =>
+      prev - 1 >= 0 ? prev - 1 : gallery.length - 1
+    );
+  };
+
+  const currentMedia = gallery?.[lightboxIndex];
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="pt-28 pb-20">
-        <div className="container mx-auto px-4 lg:px-8">
-          {/* Back Button */}
-          <Button variant="ghost" asChild className="mb-6">
-            <Link to="/empreendimentos">
-              <ArrowLeft className="w-4 h-4" />
-              Voltar para Empreendimentos
-            </Link>
-          </Button>
+      {/* HERO */}
+      <section className="relative w-full h-[70vh] sm:h-[80vh] lg:h-[85vh] overflow-hidden">
+        <img
+          src={heroImage}
+          alt={property.titulo}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
 
-          {/* HERO */}
-          <div className="relative rounded-2xl overflow-hidden shadow-[var(--shadow-medium)] mb-8 animate-fade-up">
-            <img
-              src={heroImage}
-              alt={property.titulo}
-              className="w-full h-[500px] object-cover"
-            />
-            <div className="absolute top-6 right-6 bg-secondary text-primary px-4 py-2 rounded-full font-semibold">
+        {/* BOTÃO VOLTAR (z-index MUITO ALTO) */}
+        <div className="absolute top-6 left-6 z-[99999]">
+          <Link
+            to="/empreendimentos"
+            className="inline-flex items-center gap-2 bg-black/40 px-4 py-2 rounded-lg text-white font-medium hover:bg-black/60 backdrop-blur-md transition"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Voltar para Empreendimentos
+          </Link>
+        </div>
+
+        <div className="relative z-10 h-full flex flex-col justify-end p-6 sm:p-10">
+          <div className="text-white max-w-3xl">
+            <span className="px-4 py-1 rounded-full bg-secondary text-primary font-semibold inline-block mb-4">
               {property.tipo}
+            </span>
+
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold drop-shadow-xl">
+              {property.titulo}
+            </h1>
+
+            <div className="flex items-center gap-2 mt-4 text-white/90 text-lg">
+              <MapPin className="w-5 h-5 text-secondary" />
+              {property.bairro}, {property.cidade}
             </div>
           </div>
+        </div>
+      </section>
 
+      {/* CONTEÚDO */}
+      <div className="py-16">
+        <div className="container mx-auto px-4 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-12">
             {/* MAIN */}
             <div className="lg:col-span-2 space-y-10">
-              <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                  {property.titulo}
-                </h1>
+              <p className="text-4xl font-bold text-secondary">
+                R$ {property.valor}
+              </p>
 
-                <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                  <MapPin className="w-5 h-5 text-secondary" />
-                  <span className="text-lg">
-                    {property.bairro}, {property.cidade}
-                  </span>
-                </div>
-
-                <p className="text-3xl font-bold text-secondary">
-                  R$ {property.valor}
-                </p>
-              </div>
-
-              {/* INFO RÁPIDA */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="bg-card p-4 rounded-lg text-center">
                   <Bed className="w-6 h-6 text-secondary mx-auto mb-2" />
                   <div className="text-sm text-muted-foreground">Quartos</div>
                   <div className="font-semibold">{property.quartos}</div>
                 </div>
+
                 <div className="bg-card p-4 rounded-lg text-center">
                   <Bath className="w-6 h-6 text-secondary mx-auto mb-2" />
                   <div className="text-sm text-muted-foreground">Banheiros</div>
                   <div className="font-semibold">{property.banheiros}</div>
                 </div>
+
                 <div className="bg-card p-4 rounded-lg text-center">
                   <Maximize2 className="w-6 h-6 text-secondary mx-auto mb-2" />
                   <div className="text-sm text-muted-foreground">Área</div>
@@ -171,7 +202,7 @@ const PropertyDetails = () => {
                 </p>
               </div>
 
-              {/* CARACTERÍSTICAS */}
+              {/* CARACTERISTICAS */}
               <div>
                 <h2 className="text-2xl font-bold mb-4">Diferenciais</h2>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -185,40 +216,70 @@ const PropertyDetails = () => {
               </div>
 
               {/* GALERIA */}
-              <div>
-                <h2 className="text-2xl font-bold mb-4">Galeria</h2>
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Galeria</h2>
 
-                <div className="grid grid-cols-2 gap-4">
-                  {visibleGallery.map((item: any, index: number) => (
-                    <div
-                      key={index}
-                      className="relative overflow-hidden rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-gold)] transition-all cursor-pointer"
-                    >
-                      {item.type === "image" ? (
-                        <img
-                          src={item.url}
-                          className="w-full h-64 object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-64 bg-black flex items-center justify-center">
-                          <Play className="w-14 h-14 text-white" />
-                        </div>
-                      )}
+              {/* MOBILE — CARROSSEL */}
+              <div className="flex gap-4 overflow-x-auto sm:hidden snap-x snap-mandatory pb-3">
+                {gallery.map((item: any, index: number) => (
+                  <div
+                    key={index}
+                    className="min-w-[80%] h-64 rounded-xl overflow-hidden snap-center cursor-pointer relative"
+                    onClick={() => openLightbox(index)}
+                  >
+                    {item.type === "image" ? (
+                      <img
+                        src={item.url}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <video
+                        src={item.url}
+                        className="w-full h-full object-cover"
+                        muted
+                        playsInline
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
 
-                      {/* +X overlay */}
-                      {index === 3 && extraMedia > 0 && (
-                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-2xl font-semibold">
-                          +{extraMedia} mídias
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+              {/* DESKTOP — GRID 2x2 */}
+              <div className="hidden sm:grid grid-cols-2 gap-4">
+                {visibleGallery.map((item: any, index: number) => (
+                  <div
+                    key={index}
+                    onClick={() => openLightbox(index)}
+                    className="relative overflow-hidden rounded-xl cursor-pointer group"
+                  >
+                    {item.type === "image" ? (
+                      <img
+                        src={item.url}
+                        className="w-full h-64 object-cover group-hover:scale-105 transition"
+                      />
+                    ) : (
+                      <video
+                        src={item.url}
+                        className="w-full h-64 object-cover"
+                        muted
+                        playsInline
+                      />
+                    )}
+
+                    {index === 3 && extraMedia > 0 && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-2xl font-semibold">
+                        +{extraMedia} mídias
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
 
+            </div>
+
             {/* SIDEBAR */}
-            <div className="lg:col-span-1">
+            <div>
               <div className="sticky top-28 bg-card p-8 rounded-xl shadow-[var(--shadow-medium)]">
                 <h3 className="text-2xl font-bold mb-4">Interessado?</h3>
 
@@ -227,8 +288,12 @@ const PropertyDetails = () => {
                 </p>
 
                 <Button variant="gold" size="lg" className="w-full" asChild>
-                  <a href={`https://wa.me/${property.whatsapp ?? "554792639593"}`} target="_blank">
-                    <MessageCircle className="w-5 h-5" /> WhatsApp
+                  <a
+                    href={`https://wa.me/${property.whatsapp ?? "554792639593"}`}
+                    target="_blank"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    WhatsApp
                   </a>
                 </Button>
 
@@ -242,6 +307,47 @@ const PropertyDetails = () => {
       </div>
 
       <Footer />
+
+      {/* LIGHTBOX */}
+      {lightboxOpen && (
+        <div className="fixed inset-0 bg-black/90 z-[99999] flex items-center justify-center p-4">
+          <button
+            className="absolute top-6 right-6 text-white"
+            onClick={() => setLightboxOpen(false)}
+          >
+            <X className="w-10 h-10" />
+          </button>
+
+          <button
+            className="absolute left-6 text-white"
+            onClick={prevMedia}
+          >
+            <ArrowLeft className="w-10 h-10" />
+          </button>
+
+          <div className="max-w-5xl w-full flex items-center justify-center">
+            {currentMedia?.type === "image" ? (
+              <img
+                src={currentMedia?.url ?? ""}
+                className="w-full max-h-[80vh] object-contain"
+              />
+            ) : (
+              <video
+                src={currentMedia?.url ?? ""}
+                controls
+                className="w-full max-h-[80vh]"
+              />
+            )}
+          </div>
+
+          <button
+            className="absolute right-6 text-white rotate-180"
+            onClick={nextMedia}
+          >
+            <ArrowLeft className="w-10 h-10" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
