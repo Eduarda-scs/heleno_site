@@ -13,83 +13,86 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-import fgHero from "@/assets/fg-hero.jpg"; 
-import fgTimeline from "@/assets/fg-timeline.jpg"; 
-import fgLuxury from "@/assets/fg-luxury.jpg"; 
-import fgInnovation from "@/assets/fg-innovation.jpg"; 
+import fgHero from "@/assets/fg-hero1.png";
+import fgTimeline from "@/assets/fg-timeline.jpg";
+import fgLuxury from "@/assets/fg-luxury.jpg";
+import fgInnovation from "@/assets/fg-innovation.jpg";
 
-// Dados para a página
+// Estatísticas da FG
 const fgStats = [
-  { icon: Building2, label: "Empreendimentos Entregues", value: "50+" },
+  { icon: Building2, label: "Empreendimentos Entregues", value: "63+" },
   { icon: Award, label: "Anos de História", value: "20+" },
-  { icon: Flag, label: "Obras em Andamento", value: "10+" },
-  { icon: TrendingUp, label: "Valorização Média", value: "Alta" },
+  { icon: Flag, label: "Investimentos Planejados", value: "R$ 750 mi+" },
+  { icon: TrendingUp, label: "Crescimento", value: "Histórico" },
 ];
 
+// Pilares da FG
 const pillars = [
   {
     icon: ShieldCheck,
     title: "Excelência Construtiva",
     description:
-      "Projetos com padrão internacional, materiais premium e engenharia de alto desempenho.",
+      "Projetos de elevado padrão, com materiais premium, engenharia sofisticada e atenção aos detalhes.",
   },
   {
     icon: Diamond,
     title: "Sofisticação & Luxo",
     description:
-      "Design exclusivo, acabamentos nobres e experiências de morar que definem estilo e status.",
+      "Desenvolvimentos projetados para oferecer experiências residenciais de alto luxo e exclusividade.",
   },
   {
     icon: Sparkles,
     title: "Inovação",
     description:
-      "Tecnologia, inteligência urbana e arquitetura futurista aplicada em cada detalhe.",
+      "Adoção de tecnologia, automação e soluções sustentáveis para tornar cada empreendimento moderno e eficiente.",
   },
   {
     icon: Library,
     title: "Tradição & Credibilidade",
     description:
-      "Referência em Balneário Camboriú, entregando obras icônicas que marcam a cidade.",
+      "Mais de 40 anos de legado, sólida governança corporativa e reputação consolidada no mercado.",
   },
 ];
 
-const FG = () => {
+const AboutFG = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden ">
+      <section className="relative h-[50vh] sm:h-[80vh] flex items-center justify-center overflow-hidden">
+
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="
+            absolute inset-0 
+            bg-contain bg-top sm:bg-cover 
+            bg-no-repeat
+          "
           style={{ backgroundImage: `url(${fgHero})` }}
         />
+
         <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/60 to-primary/80" />
 
-        <div className="relative z-10 container mx-auto px-4 text-center text-primary-foreground animate-fade-up">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            FG Empreendimentos
-          </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 max-w-3xl mx-auto">
-            Excelência, luxo e inovação que transformam Balneário Camboriú.
-          </p>
-        </div>
+        
+        
+
       </section>
 
+
       {/* Estatísticas */}
-      <section className="py-16 bg-primary text-primary-foreground -mt-20 relative z-10">
-        <div className="container mx-auto px-4 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="py-12 sm:py-16 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 lg:px-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {fgStats.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <div
                 key={index}
                 className="text-center animate-fade-up"
-                style={{ animationDelay: `${index * 120}ms` }}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Icon className="w-10 h-10 mx-auto mb-3 text-secondary" />
-                <div className="text-3xl font-bold mb-1">{stat.value}</div>
-                <div className="text-sm text-primary-foreground/80">
+                <Icon className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 sm:mb-3 text-secondary" />
+                <div className="text-2xl sm:text-3xl font-bold mb-1">{stat.value}</div>
+                <div className="text-xs sm:text-sm text-primary-foreground/80">
                   {stat.label}
                 </div>
               </div>
@@ -99,67 +102,63 @@ const FG = () => {
       </section>
 
       {/* Sobre a FG */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+      <section className="py-16 sm:py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
           <div className="animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Um Marco na Construção de Balneário Camboriú
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Um marco na construção de Balneário Camboriú
             </h2>
-            <p className="text-muted-foreground leading-relaxed mb-6 text-lg">
-              A FG Empreendimentos é reconhecida como uma das maiores e mais
-              respeitadas construtoras de alto padrão do Brasil, responsável por
-              transformar o skyline de Balneário Camboriú com projetos
-              futuristas e empreendimentos icônicos.
+            <p className="text-muted-foreground leading-relaxed mb-4 text-base sm:text-lg">
+              Com mais de 40 anos de atuação, a FG Empreendimentos é uma das principais incorporadoras de alto padrão do Brasil.
             </p>
-
-            <p className="text-muted-foreground leading-relaxed mb-6 text-lg">
-              Cada obra carrega a assinatura da marca: exclusividade,
-              tecnologia, acabamento impecável e experiências de alto luxo que
-              redefinem a forma de viver.
+            <p className="text-muted-foreground leading-relaxed mb-4 text-base sm:text-lg">
+              Em 2021, a empresa completou 20 anos de história, consolidando seu portfólio com empreendimentos icônicos.
             </p>
-
+            <p className="text-muted-foreground leading-relaxed mb-6 text-base sm:text-lg">
+              Recentemente, a FG anunciou investimentos superiores a R$ 750 milhões para ampliar sua operação em Balneário Camboriú.
+            </p>
             <Button variant="gold" size="lg" asChild>
-              <Link to="/empreendimentos">Conhecer Empreendimentos</Link>
+              <Link to="/empreendimentos">Ver Portfólio</Link>
             </Button>
           </div>
 
           <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-medium)] animate-fade-up">
             <img
               src={fgTimeline}
-              alt="FG História"
-              className="w-full h-[500px] object-cover"
+              alt="Linha do tempo FG"
+              className="w-full h-[400px] sm:h-[500px] md:h-[600px] object-cover"
             />
           </div>
         </div>
       </section>
 
       {/* Pilares */}
-      <section className="py-20 bg-luxury-bg">
+      <section className="py-16 sm:py-20 bg-luxury-bg">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-16 animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Pilares <span className="text-secondary">FG</span>
+          <div className="text-center mb-12 sm:mb-16 animate-fade-up">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Pilares da FG
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Valores que tornam a FG referência nacional em alto padrão.
+              Valores que definem cada empreendimento da empresa
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4">
             {pillars.map((pillar, index) => {
               const Icon = pillar.icon;
               return (
                 <div
                   key={index}
-                  className="p-8 bg-card rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-gold)] transition-all duration-300 hover:-translate-y-1 animate-fade-up"
-                  style={{ animationDelay: `${index * 150}ms` }}
+                  className="p-6 bg-card rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-gold)] transition-all duration-300 hover:-translate-y-1 animate-fade-up"
+                  style={{ animationDelay: `${index * 120}ms` }}
                 >
-                  <div className="flex items-start gap-6">
-                    <div className="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-7 h-7 text-secondary" />
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+                      <Icon className="w-6 h-6 text-secondary" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3 className="text-lg font-semibold mb-2">
                         {pillar.title}
                       </h3>
                       <p className="text-muted-foreground leading-relaxed">
@@ -174,54 +173,46 @@ const FG = () => {
         </div>
       </section>
 
-      {/* Luxo & Sofisticação */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+      {/* Luxo */}
+      <section className="py-16 sm:py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
           <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-medium)] animate-fade-up">
             <img
               src={fgLuxury}
               alt="Luxo FG"
-              className="w-full h-[600px] object-cover"
+              className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover"
             />
           </div>
 
           <div className="animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
               Luxo que Define um Novo Padrão
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              Os empreendimentos FG são criados para um público que busca o
-              máximo em conforto, elegância e exclusividade.
+            <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+              Os empreendimentos da FG são planejados para um público que busca elegância, conforto e exclusividade.
             </p>
-
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              Cada torre é projetada para se tornar um ícone arquitetônico,
-              elevando ainda mais o patamar de Balneário Camboriú como uma das
-              cidades mais luxuosas do Brasil.
+            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+              Cada projeto é concebido para se tornar um ícone arquitetônico, com design sofisticado e alto valor agregado.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Tecnologia & Inovação */}
-      <section className="py-20 bg-luxury-bg">
-        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+      {/* Inovação */}
+      <section className="py-16 sm:py-20 bg-luxury-bg">
+        <div className="container mx-auto px-4 lg:px-8 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
           <div className="animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
               Tecnologia & <span className="text-secondary">Inovação</span>
             </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+              A FG aposta em automação, sistemas inteligentes e métodos construtivos sustentáveis para trazer valor real aos moradores.
+            </p>
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              A FG é pioneira em sistemas inteligentes, automação, segurança de
-              alto desempenho e soluções de sustentabilidade.
+              Projetos são desenvolvidos com foco em segurança, eficiência energética e conforto, sempre com visão de futuro.
             </p>
-
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              Seus empreendimentos incorporam o que há de mais avançado em
-              engenharia e tecnologia, proporcionando experiências únicas.
-            </p>
-
             <Button variant="hero" size="lg" asChild>
-              <Link to="/empreendimentos">Ver Portfólio</Link>
+              <Link to="/empreendimentos">Ver Empreendimentos</Link>
             </Button>
           </div>
 
@@ -229,8 +220,31 @@ const FG = () => {
             <img
               src={fgInnovation}
               alt="Inovação FG"
-              className="w-full h-[600px] object-cover"
+              className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Informações Corporativas */}
+      <section className="py-16 sm:py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8 space-y-6 sm:space-y-10">
+          <div className="animate-fade-up">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
+              Institucional e Impacto
+            </h2>
+            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
+              A FG integra a FG Brazil Holding, que reúne empresas nos setores de construção civil, hotelaria, arquitetura e serviços.
+            </p>
+            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
+              A empresa se destaca por governança robusta, estratégia de longo prazo e compromisso social e ambiental.
+            </p>
+            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
+              A FG possui mais de 2 milhões de m² de potencial construtivo em Balneário Camboriú.
+            </p>
+            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
+              O grupo projeta crescimento financeiro sólido e mantém margens operacionais expressivas.
+            </p>
           </div>
         </div>
       </section>
@@ -240,4 +254,4 @@ const FG = () => {
   );
 };
 
-export default FG;
+export default AboutFG;

@@ -6,7 +6,7 @@ const SidebarMenu = ({ open, onClose }) => {
     <>
       {/* === OVERLAY ESCURO === */}
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] transition-opacity duration-300
+        className={`fixed inset-0 bg-black/60 z-[100] transition-opacity duration-300
         ${open ? "opacity-100 visible pointer-events-auto" : "opacity-0 invisible pointer-events-none"}`}
         onClick={onClose}
       />
@@ -15,7 +15,7 @@ const SidebarMenu = ({ open, onClose }) => {
       <aside
         className={`fixed top-0 left-0 h-full w-72 
         bg-[#1a1a1a] text-white
-        shadow-2xl z-[99] p-6 pt-10 flex flex-col gap-6
+        shadow-2xl z-[101] p-6 pt-10 flex flex-col gap-6
         transition-transform duration-300
         ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
@@ -33,7 +33,7 @@ const SidebarMenu = ({ open, onClose }) => {
         {/* LINKS */}
         <nav className="flex flex-col gap-4 mt-4 text-lg">
           <Link
-            to="/painel"
+            to="/dashboard"
             className="hover:text-yellow-400 transition-colors"
             onClick={onClose}
           >
@@ -41,27 +41,11 @@ const SidebarMenu = ({ open, onClose }) => {
           </Link>
 
           <Link
-            to="/imoveis"
+            to="/cadastroimoveis"
             className="hover:text-yellow-400 transition-colors"
             onClick={onClose}
           >
             Imóveis
-          </Link>
-
-          <Link
-            to="/contatos"
-            className="hover:text-yellow-400 transition-colors"
-            onClick={onClose}
-          >
-            Contatos
-          </Link>
-
-          <Link
-            to="/config"
-            className="hover:text-yellow-400 transition-colors"
-            onClick={onClose}
-          >
-            Configurações
           </Link>
         </nav>
       </aside>

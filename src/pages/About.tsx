@@ -10,8 +10,8 @@ import {
   MapPin,
   Users,
 } from "lucide-react";
-import propertyLuxury from "@/assets/property-luxury.jpg";
-import cityAerial from "@/assets/city-aerial.jpg";
+import propertyLuxury from "@/assets/heleno_sobre2.jpg";
+import cityAerial from "@/assets/heleno_sobre.jpg";
 
 const values = [
   {
@@ -45,24 +45,25 @@ const About = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${cityAerial})` }}
-        />
-        <div className="absolute inset-0 bg-primary/70" />
+    {/* Hero Section */}
+    <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+      <div
+        className="absolute inset-0 bg-cover bg-[center_top_15%]"
+        style={{ backgroundImage: `url(${cityAerial})` }}
+      />
+      <div className="absolute inset-0 bg-primary/70" />
 
-        <div className="relative z-10 container mx-auto px-4 text-center text-primary-foreground animate-fade-up">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Sobre <span className="text-secondary">Heleno Alves</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 max-w-3xl mx-auto">
-            Uma trajetória marcada por dedicação, confiança e liderança no
-            mercado imobiliário.
-          </p>
-        </div>
-      </section>
+      <div className="relative z-10 container mx-auto px-4 text-center text-primary-foreground animate-fade-up mt-20">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          Sobre <span className="text-secondary">Heleno Alves</span>
+        </h1>
+
+        <p className="text-lg md:text-2xl text-primary-foreground/90 max-w-3xl mx-auto">
+          Uma trajetória marcada por dedicação, confiança e liderança no
+          mercado imobiliário.
+        </p>
+      </div>
+    </section>
 
       {/* Sobre Heleno */}
       <section className="py-20 bg-luxury-bg">
@@ -112,7 +113,7 @@ const About = () => {
                 <img
                   src={propertyLuxury}
                   alt="Heleno Alves"
-                  className="w-full h-[500px] object-cover"
+                  className="w-full h-[1000px] object-cover"
                 />
               </div>
               <div className="absolute -bottom-6 -left-6 w-48 h-48 bg-secondary/10 rounded-2xl -z-10" />
