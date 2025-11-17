@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/authProvider";
 import Sidebar from "@/components/SidebarMenu";
+import logo from "@/assets/logo.png";
+
 
 const navigation = [
   { name: "Início", href: "/" },
@@ -50,15 +52,13 @@ export const Header = () => {
                 <Menu size={30} />
               </button>
             )}
-
-            {/* LOGO */}
-            <Link
-              to="/"
-              className="text-2xl font-bold text-primary-foreground hover:text-secondary transition-colors"
-            >
-              Heleno <span className="text-secondary">Alves</span>
+            <Link to="/" className="flex items-center">
+              <img 
+                src={logo}// coloque o caminho da sua logo aqui
+                alt="Heleno Alves" 
+                className="h-10 w-auto"  // ajuste o tamanho como quiser
+              />
             </Link>
-
             {/* MENU DESKTOP */}
             <div className="hidden md:flex items-center space-x-8">
               {navigation.map((item) => (
